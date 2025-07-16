@@ -130,13 +130,21 @@ class Game {
     }
 
     // 处理当前位置
-    await this.handlePlayerLanding(player)
+    const eventResult = await this.handlePlayerLanding(player)
 
     // 检查游戏是否结束
     this.checkGameEnd()
 
-    // 如果没有掷出双数，切换到下一个玩家
-    if (!isDouble || player.inJail) {
+    // 如果没有掷出双数且没有需要用户交互的事件，切换到下一个玩家
+    const needsUserInteraction = eventResult && (
+      eventResult.type === 'property' || 
+      eventResult.type === 'chance' || 
+      eventResult.type === 'community' ||
+      eventResult.type === 'tax' ||
+      eventResult.type === 'rent'
+    )
+    
+    if (!isDouble && !player.inJail && !needsUserInteraction) {
       this.nextTurn()
     }
 
@@ -149,59 +157,96 @@ class Game {
       isDouble,
       oldPosition,
       newPosition: player.position,
-      passedStart: player.position < oldPosition
+      passedStart: player.position < oldPosition,
+      event: eventResult,
+      needsUserInteraction
     }
   }
 
   async handlePlayerLanding(player) {
     const property = this.board.find(p => p.position === player.position)
-    if (!property) return
+    if (!property) return null
+
+    let eventResult = null
 
     switch (property.group) {
       case 'special':
         // 起点，什么都不做
+        if (property.position === 0) {
+          eventResult = {
+            type: 'special',
+            message: '欢迎来到起点！',
+            playerId: player.id
+          }
+        }
         break
       
       case 'chance':
-        await this.drawChanceCard(player)
+        eventResult = await this.drawChanceCard(player)
         break
       
       case 'community':
-        await this.drawCommunityCard(player)
+        eventResult = await this.drawCommunityCard(player)
         break
       
       case 'tax':
-        await this.payTax(player, property)
+        eventResult = await this.payTax(player, property)
         break
       
       case 'jail':
         // 只是访问监狱，不做任何处理
+        eventResult = {
+          type: 'jail',
+          message: '您正在监狱中访问',
+          playerId: player.id
+        }
         break
       
       case 'gotojail':
         this.sendToJail(player)
+        eventResult = {
+          type: 'gotojail',
+          message: '您被送进了监狱！',
+          playerId: player.id
+        }
         break
       
       case 'parking':
         // 免费停车，什么都不做
+        eventResult = {
+          type: 'parking',
+          message: '在这里休息一下吧',
+          playerId: player.id
+        }
         break
       
       default:
         // 普通地产
-        await this.handlePropertyLanding(player, property)
+        eventResult = await this.handlePropertyLanding(player, property)
         break
     }
+    
+    return eventResult
   }
 
   async handlePropertyLanding(player, property) {
-    if (!property.owner) {
+    if (!property.owner && property.price > 0) {
       // 无主地产，可以购买
       this.addGameEvent('landOnProperty', {
         playerId: player.id,
         propertyId: property.id,
         canBuy: player.money >= property.price
       })
-    } else if (property.owner !== player.id && !property.mortgaged) {
+      
+      return {
+        type: 'property',
+        propertyId: property.id,
+        propertyName: property.name,
+        price: property.price,
+        canBuy: player.money >= property.price,
+        playerId: player.id
+      }
+    } else if (property.owner && property.owner !== player.id && !property.mortgaged) {
       // 需要支付租金
       const rent = this.calculateRent(property)
       const owner = this.getPlayer(property.owner)
@@ -221,8 +266,34 @@ class Game {
         if (player.money === 0) {
           this.handleBankruptcy(player)
         }
+        
+        return {
+          type: 'rent',
+          propertyName: property.name,
+          amount: rent,
+          ownerName: owner.name,
+          playerId: player.id
+        }
+      }
+    } else if (property.owner === player.id) {
+      // 玩家自己的地产，可以考虑升级
+      const canUpgrade = property.houses < 4 && property.price > 0
+      const upgradePrice = Math.floor(property.price * 0.5)
+      
+      return {
+        type: 'ownProperty',
+        propertyId: property.id,
+        propertyName: property.name,
+        message: `欢迎回到您的${property.name}`,
+        canUpgrade,
+        upgradePrice,
+        currentHouses: property.houses,
+        maxHouses: 4,
+        playerId: player.id
       }
     }
+    
+    return null
   }
 
   calculateRent(property) {
@@ -245,12 +316,14 @@ class Game {
       rent = (this.dice[0] + this.dice[1]) * multiplier
     }
     
-    // 房屋和酒店加成
+    // 房屋和酒店加成 - 更显著的租金增益
     if (property.houses > 0) {
-      rent *= (1 + property.houses * 0.5)
+      // 每个房屋增加100%的租金，最多400%
+      rent *= (1 + property.houses * 1.0)
     }
     if (property.hotels > 0) {
-      rent *= (1 + property.hotels * 2)
+      // 酒店提供更大的收益
+      rent *= (1 + property.hotels * 3)
     }
     
     return Math.floor(rent)
@@ -296,6 +369,8 @@ class Game {
     return {
       playerId,
       propertyId,
+      propertyName: property.name,
+      playerName: player.name,
       price: property.price,
       remainingMoney: player.money
     }
@@ -317,7 +392,12 @@ class Game {
       throw new Error('已达到最大房屋数量')
     }
     
-    const housePrice = property.price * 0.5
+    if (property.price <= 0) {
+      throw new Error('此地产无法建造房屋')
+    }
+    
+    // 根据地产价值计算房屋建造成本
+    const housePrice = Math.floor(property.price * 0.5)
     if (player.money < housePrice) {
       throw new Error('资金不足建造房屋')
     }
@@ -329,6 +409,7 @@ class Game {
     this.addGameEvent('buildHouse', {
       playerId,
       propertyId,
+      propertyName: property.name,
       price: housePrice,
       houses: property.houses
     })
@@ -338,8 +419,11 @@ class Game {
     return {
       playerId,
       propertyId,
+      propertyName: property.name,
+      playerName: player.name,
       price: housePrice,
-      houses: property.houses
+      houses: property.houses,
+      remainingMoney: player.money
     }
   }
 
@@ -358,6 +442,12 @@ class Game {
     })
     
     await this.executeCardAction(player, card)
+    
+    return {
+      type: 'chance',
+      card: card,
+      playerId: player.id
+    }
   }
 
   async drawCommunityCard(player) {
@@ -375,6 +465,12 @@ class Game {
     })
     
     await this.executeCardAction(player, card)
+    
+    return {
+      type: 'community',
+      card: card,
+      playerId: player.id
+    }
   }
 
   async executeCardAction(player, card) {
@@ -415,7 +511,7 @@ class Game {
   }
 
   async payTax(player, property) {
-    const taxAmount = property.id === 'prop_4' ? 200 : 750 // 所得税或奢侈税
+    const taxAmount = property.id === '4' ? 200 : 750 // 所得税或奢侈税
     player.money = Math.max(0, player.money - taxAmount)
     
     this.addGameEvent('payTax', {
@@ -426,6 +522,13 @@ class Game {
     
     if (player.money === 0) {
       this.handleBankruptcy(player)
+    }
+    
+    return {
+      type: 'tax',
+      amount: taxAmount,
+      propertyName: property.name,
+      playerId: player.id
     }
   }
 
@@ -505,6 +608,16 @@ class Game {
       timestamp: new Date(),
       turn: this.turn
     })
+  }
+
+  // 完成回合，确保事件处理完毕后才切换玩家
+  finishTurn() {
+    // 只有在当前玩家还是轮到他时才切换
+    const currentPlayer = this.getCurrentPlayer()
+    if (currentPlayer && this.currentPlayerIndex < this.players.length) {
+      this.nextTurn()
+    }
+    return this.getState()
   }
 
   getState() {

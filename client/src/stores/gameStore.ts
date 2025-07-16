@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { io, Socket } from 'socket.io-client'
+import { ElNotification } from 'element-plus'
 import type { GameState, Player, Property, Room, ChatMessage, TradeOffer } from '@/types'
 
 export const useGameStore = defineStore('game', () => {
@@ -92,6 +93,40 @@ export const useGameStore = defineStore('game', () => {
         gameState.value.phase = 'ended'
       }
     })
+
+    socket.value.on('propertyPurchased', (data: { playerId: string; propertyId: string; propertyName: string; playerName: string; price: number }) => {
+      // 显示购买通知
+      ElNotification({
+        title: '🏘️ 地产购买',
+        message: `${data.playerName} 购买了 ${data.propertyName}，花费 ¥${data.price.toLocaleString()}`,
+        type: 'success',
+        duration: 3000,
+        position: 'top-right'
+      })
+    })
+
+    socket.value.on('playerEvent', (eventData: any) => {
+      // 转发事件数据给前端处理
+      if (window.handlePlayerEvent) {
+        window.handlePlayerEvent(eventData)
+      }
+    })
+
+    socket.value.on('houseBuilt', (data: { playerId: string; propertyId: string; propertyName: string; playerName: string; price: number; houses: number }) => {
+      // 显示建造通知
+      ElNotification({
+        title: '🏠 房屋建造',
+        message: `${data.playerName} 在 ${data.propertyName} 建造了房屋，花费 ¥${data.price.toLocaleString()}，现有${data.houses}栋房屋`,
+        type: 'success',
+        duration: 3000,
+        position: 'top-right'
+      })
+    })
+
+    socket.value.on('turnCompleted', (data: { playerId: string }) => {
+      // 回合完成通知
+      console.log(`玩家 ${data.playerId} 完成回合`)
+    })
   }
 
   function joinRoom(roomId: string, playerName: string) {
@@ -179,6 +214,11 @@ export const useGameStore = defineStore('game', () => {
     tradeOffers.value = []
   }
 
+  function confirmEvent() {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('confirmEvent', { roomId: currentRoom.value.id })
+  }
+
   function clearError() {
     error.value = null
   }
@@ -207,6 +247,7 @@ export const useGameStore = defineStore('game', () => {
     sendTradeOffer,
     respondToTrade,
     leaveRoom,
+    confirmEvent,
     clearError
   }
 })

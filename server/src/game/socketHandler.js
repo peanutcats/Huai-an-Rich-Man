@@ -173,6 +173,11 @@ function gameSocketHandler(io) {
         // 通知所有玩家
         io.to(roomId).emit('diceRolled', result)
         io.to(roomId).emit('gameState', game.getState())
+        
+        // 如果有事件，发送事件通知
+        if (result.event) {
+          io.to(roomId).emit('playerEvent', result.event)
+        }
 
         console.log(`🎲 玩家 ${socket.playerId} 掷骰子: ${result.dice}`)
 
@@ -226,6 +231,36 @@ function gameSocketHandler(io) {
 
       } catch (error) {
         console.error('建造房屋错误:', error)
+        socket.emit('error', error.message)
+      }
+    })
+
+    // 事件确认（完成回合）
+    socket.on('confirmEvent', async (data) => {
+      try {
+        const { roomId } = data
+        const game = games.get(roomId)
+        
+        if (!game) {
+          socket.emit('error', '游戏不存在')
+          return
+        }
+
+        if (!game.isPlayerTurn(socket.playerId)) {
+          socket.emit('error', '不是你的回合')
+          return
+        }
+
+        // 如果当前玩家还没有切换，则结束回合
+        const updatedState = game.finishTurn()
+        
+        io.to(roomId).emit('gameState', updatedState)
+        io.to(roomId).emit('turnCompleted', { playerId: socket.playerId })
+
+        console.log(`✅ 玩家 ${socket.playerId} 完成回合`)
+
+      } catch (error) {
+        console.error('确认事件错误:', error)
         socket.emit('error', error.message)
       }
     })

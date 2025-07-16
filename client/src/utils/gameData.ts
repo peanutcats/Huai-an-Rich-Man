@@ -99,14 +99,14 @@ export function getPropertiesByGroup(group: string): Property[] {
 export function calculateRent(property: Property): number {
   let rent = property.rent
   
-  // 房屋加成
+  // 房屋加成 - 每个房屋增加100%的租金
   if (property.houses > 0) {
-    rent *= (1 + property.houses * 0.5)
+    rent *= (1 + property.houses * 1.0)
   }
   
-  // 酒店加成
+  // 酒店加成 - 更大的收益
   if (property.hotels > 0) {
-    rent *= (1 + property.hotels * 2)
+    rent *= (1 + property.hotels * 3)
   }
   
   return Math.floor(rent)

@@ -109,29 +109,7 @@ body {
   gap: 10px;
 }
 
-.dice-container {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.dice {
-  width: 60px;
-  height: 60px;
-  background: #fff;
-  border: 2px solid #333;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
+/* 移除了全局的 dice-container 和 dice 样式，避免与 GameBoard.vue 中的样式冲突 */
 
 .chat-container {
   position: fixed;

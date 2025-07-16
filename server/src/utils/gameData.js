@@ -1,62 +1,62 @@
 const HUAIAN_PROPERTIES = [
   // 起点
-  { id: 'prop_0', name: '起点', position: 0, price: 0, rent: 0, group: 'special', houses: 0, hotels: 0, mortgaged: false, description: '每次经过或停留获得2000元', culture: '淮安市政府广场，城市的政治中心' },
+  { id: '0', name: '起点', position: 0, price: 0, rent: 0, group: 'special', houses: 0, hotels: 0, mortgaged: false, description: '每次经过或停留获得2000元', culture: '淮安市政府广场，城市的政治中心' },
   
   // 第一组 - 淮安区
-  { id: 'prop_1', name: '淮安府署', position: 1, price: 600, rent: 20, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '明清时期淮安府衙门所在地', culture: '淮安历史文化的重要象征，见证了淮安作为漕运总督府的辉煌' },
-  { id: 'prop_2', name: '机会', position: 2, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
-  { id: 'prop_3', name: '河下古镇', position: 3, price: 600, rent: 40, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '千年古镇，文化底蕴深厚', culture: '淮安历史文化名镇，古代漕运重镇', financialTip: '旅游业投资具有长期稳定回报的特点' },
-  { id: 'prop_4', name: '所得税', position: 4, price: 0, rent: 0, group: 'tax', houses: 0, hotels: 0, mortgaged: false, description: '缴纳所得税200元' },
-  { id: 'prop_5', name: '淮安东站', position: 5, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '高铁枢纽站', culture: '连接南北的重要交通枢纽', financialTip: '交通基础设施是经济发展的重要支撑' },
+  { id: '1', name: '淮安府署', position: 1, price: 600, rent: 20, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '明清时期淮安府衙门所在地', culture: '淮安历史文化的重要象征，见证了淮安作为漕运总督府的辉煌' },
+  { id: '2', name: '机会', position: 2, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
+  { id: '3', name: '河下古镇', position: 3, price: 600, rent: 40, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '千年古镇，文化底蕴深厚', culture: '淮安历史文化名镇，古代漕运重镇', financialTip: '旅游业投资具有长期稳定回报的特点' },
+  { id: '4', name: '所得税', position: 4, price: 0, rent: 0, group: 'tax', houses: 0, hotels: 0, mortgaged: false, description: '缴纳所得税200元' },
+  { id: '5', name: '淮安东站', position: 5, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '高铁枢纽站', culture: '连接南北的重要交通枢纽', financialTip: '交通基础设施是经济发展的重要支撑' },
   
   // 第二组 - 清江浦区
-  { id: 'prop_6', name: '清晏园', position: 6, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '淮安最著名的古典园林', culture: '江南园林艺术的代表作品' },
-  { id: 'prop_7', name: '公共服务', position: 7, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
-  { id: 'prop_8', name: '淮安万达广场', position: 8, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '现代化商业中心', financialTip: '商业地产投资需要考虑人流量和消费能力' },
-  { id: 'prop_9', name: '里运河', position: 9, price: 1200, rent: 80, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '京杭大运河淮安段', culture: '世界文化遗产，千年水运文化', financialTip: '文化旅游资源具有独特的投资价值' },
+  { id: '6', name: '清晏园', position: 6, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '淮安最著名的古典园林', culture: '江南园林艺术的代表作品' },
+  { id: '7', name: '公共服务', position: 7, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
+  { id: '8', name: '淮安万达广场', position: 8, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '现代化商业中心', financialTip: '商业地产投资需要考虑人流量和消费能力' },
+  { id: '9', name: '里运河', position: 9, price: 1200, rent: 80, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '京杭大运河淮安段', culture: '世界文化遗产，千年水运文化', financialTip: '文化旅游资源具有独特的投资价值' },
   
   // 监狱
-  { id: 'prop_10', name: '监狱', position: 10, price: 0, rent: 0, group: 'jail', houses: 0, hotels: 0, mortgaged: false, description: '临时拘留所' },
+  { id: '10', name: '监狱', position: 10, price: 0, rent: 0, group: 'jail', houses: 0, hotels: 0, mortgaged: false, description: '临时拘留所' },
   
   // 剩余地产简化版本
-  { id: 'prop_11', name: '韩信故里', position: 11, price: 1400, rent: 100, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '兵仙韩信的故乡', culture: '韩信点兵、韩信练兵的历史文化景点' },
-  { id: 'prop_12', name: '淮阴电力', position: 12, price: 1500, rent: 0, group: 'utility', houses: 0, hotels: 0, mortgaged: false, description: '电力供应公司', financialTip: '公用事业投资具有稳定的现金流' },
-  { id: 'prop_13', name: '淮阴工业园', position: 13, price: 1400, rent: 100, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '现代制造业基地' },
-  { id: 'prop_14', name: '师范学院', position: 14, price: 1600, rent: 120, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '知名师范院校' },
-  { id: 'prop_15', name: '汽车站', position: 15, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '长途客运枢纽' },
+  { id: '11', name: '韩信故里', position: 11, price: 1400, rent: 100, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '兵仙韩信的故乡', culture: '韩信点兵、韩信练兵的历史文化景点' },
+  { id: '12', name: '淮阴电力', position: 12, price: 1500, rent: 0, group: 'utility', houses: 0, hotels: 0, mortgaged: false, description: '电力供应公司', financialTip: '公用事业投资具有稳定的现金流' },
+  { id: '13', name: '淮阴工业园', position: 13, price: 1400, rent: 100, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '现代制造业基地' },
+  { id: '14', name: '师范学院', position: 14, price: 1600, rent: 120, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '知名师范院校' },
+  { id: '15', name: '汽车站', position: 15, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '长途客运枢纽' },
   
-  { id: 'prop_16', name: '富士康', position: 16, price: 1800, rent: 140, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '高科技制造基地' },
-  { id: 'prop_17', name: '公共服务', position: 17, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
-  { id: 'prop_18', name: '软件园', position: 18, price: 1800, rent: 140, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '软件产业聚集区' },
-  { id: 'prop_19', name: '保税区', position: 19, price: 2000, rent: 160, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '对外贸易特殊监管区' },
+  { id: '16', name: '富士康', position: 16, price: 1800, rent: 140, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '高科技制造基地' },
+  { id: '17', name: '公共服务', position: 17, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
+  { id: '18', name: '软件园', position: 18, price: 1800, rent: 140, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '软件产业聚集区' },
+  { id: '19', name: '保税区', position: 19, price: 2000, rent: 160, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '对外贸易特殊监管区' },
   
   // 免费停车
-  { id: 'prop_20', name: '免费停车', position: 20, price: 0, rent: 0, group: 'parking', houses: 0, hotels: 0, mortgaged: false, description: '免费停车场' },
+  { id: '20', name: '免费停车', position: 20, price: 0, rent: 0, group: 'parking', houses: 0, hotels: 0, mortgaged: false, description: '免费停车场' },
   
-  { id: 'prop_21', name: '涟水公园', position: 21, price: 2200, rent: 180, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '涟水县城市公园' },
-  { id: 'prop_22', name: '机会', position: 22, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
-  { id: 'prop_23', name: '涟水机场', position: 23, price: 2200, rent: 180, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '支线机场' },
-  { id: 'prop_24', name: '涟水工业园', position: 24, price: 2400, rent: 200, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '县域工业发展基地' },
-  { id: 'prop_25', name: '新长铁路', position: 25, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '重要铁路干线' },
+  { id: '21', name: '涟水公园', position: 21, price: 2200, rent: 180, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '涟水县城市公园' },
+  { id: '22', name: '机会', position: 22, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
+  { id: '23', name: '涟水机场', position: 23, price: 2200, rent: 180, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '支线机场' },
+  { id: '24', name: '涟水工业园', position: 24, price: 2400, rent: 200, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '县域工业发展基地' },
+  { id: '25', name: '新长铁路', position: 25, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '重要铁路干线' },
   
-  { id: 'prop_26', name: '洪泽湖', position: 26, price: 2600, rent: 220, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '中国第四大淡水湖' },
-  { id: 'prop_27', name: '洪泽湖大堤', position: 27, price: 2600, rent: 220, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '古代水利工程' },
-  { id: 'prop_28', name: '自来水公司', position: 28, price: 1500, rent: 0, group: 'utility', houses: 0, hotels: 0, mortgaged: false, description: '城市供水服务' },
-  { id: 'prop_29', name: '洪泽渔港', position: 29, price: 2800, rent: 240, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '淡水渔业基地' },
+  { id: '26', name: '洪泽湖', position: 26, price: 2600, rent: 220, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '中国第四大淡水湖' },
+  { id: '27', name: '洪泽湖大堤', position: 27, price: 2600, rent: 220, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '古代水利工程' },
+  { id: '28', name: '自来水公司', position: 28, price: 1500, rent: 0, group: 'utility', houses: 0, hotels: 0, mortgaged: false, description: '城市供水服务' },
+  { id: '29', name: '洪泽渔港', position: 29, price: 2800, rent: 240, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '淡水渔业基地' },
   
   // 去监狱
-  { id: 'prop_30', name: '去监狱', position: 30, price: 0, rent: 0, group: 'gotojail', houses: 0, hotels: 0, mortgaged: false, description: '直接前往监狱' },
+  { id: '30', name: '去监狱', position: 30, price: 0, rent: 0, group: 'gotojail', houses: 0, hotels: 0, mortgaged: false, description: '直接前往监狱' },
   
-  { id: 'prop_31', name: '龙虾城', position: 31, price: 3000, rent: 260, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '中国龙虾之都' },
-  { id: 'prop_32', name: '第一山', position: 32, price: 3000, rent: 260, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '国家级森林公园' },
-  { id: 'prop_33', name: '公共服务', position: 33, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
-  { id: 'prop_34', name: '盱眙古城', position: 34, price: 3200, rent: 280, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '千年古县' },
-  { id: 'prop_35', name: '宁淮高速', position: 35, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '连接南京的高速公路' },
+  { id: '31', name: '龙虾城', position: 31, price: 3000, rent: 260, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '中国龙虾之都' },
+  { id: '32', name: '第一山', position: 32, price: 3000, rent: 260, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '国家级森林公园' },
+  { id: '33', name: '公共服务', position: 33, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
+  { id: '34', name: '盱眙古城', position: 34, price: 3200, rent: 280, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '千年古县' },
+  { id: '35', name: '宁淮高速', position: 35, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '连接南京的高速公路' },
   
-  { id: 'prop_36', name: '机会', position: 36, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
-  { id: 'prop_37', name: '荷花荡', position: 37, price: 3500, rent: 350, group: 'darkblue', houses: 0, hotels: 0, mortgaged: false, description: '万亩荷花观赏地' },
-  { id: 'prop_38', name: '奢侈税', position: 38, price: 0, rent: 0, group: 'tax', houses: 0, hotels: 0, mortgaged: false, description: '缴纳奢侈税750元' },
-  { id: 'prop_39', name: '水上森林', position: 39, price: 4000, rent: 500, group: 'darkblue', houses: 0, hotels: 0, mortgaged: false, description: '独特的水上森林景观' }
+  { id: '36', name: '机会', position: 36, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
+  { id: '37', name: '荷花荡', position: 37, price: 3500, rent: 350, group: 'darkblue', houses: 0, hotels: 0, mortgaged: false, description: '万亩荷花观赏地' },
+  { id: '38', name: '奢侈税', position: 38, price: 0, rent: 0, group: 'tax', houses: 0, hotels: 0, mortgaged: false, description: '缴纳奢侈税750元' },
+  { id: '39', name: '水上森林', position: 39, price: 4000, rent: 500, group: 'darkblue', houses: 0, hotels: 0, mortgaged: false, description: '独特的水上森林景观' }
 ]
 
 const CHANCE_CARDS = [
