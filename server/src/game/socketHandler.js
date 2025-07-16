@@ -178,6 +178,13 @@ function gameSocketHandler(io) {
         if (result.event) {
           io.to(roomId).emit('playerEvent', result.event)
         }
+        
+        // 如果没有需要用户交互的事件，且不是双数，自动切换回合
+        if (!result.needsUserInteraction && !result.isDouble) {
+          setTimeout(() => {
+            io.to(roomId).emit('gameState', game.getState())
+          }, 1000)
+        }
 
         console.log(`🎲 玩家 ${socket.playerId} 掷骰子: ${result.dice}`)
 
@@ -289,6 +296,30 @@ function gameSocketHandler(io) {
 
       } catch (error) {
         console.error('聊天消息错误:', error)
+      }
+    })
+
+    // 拒绝购买地产（触发拍卖）
+    socket.on('declineProperty', async (data) => {
+      try {
+        const { roomId, propertyId } = data
+        const game = games.get(roomId)
+        
+        if (!game) {
+          socket.emit('error', '游戏不存在')
+          return
+        }
+
+        // 触发拍卖
+        const auctionData = await game.startAuction(propertyId, 0)
+        io.to(roomId).emit('auctionStarted', auctionData)
+        io.to(roomId).emit('gameState', game.getState())
+
+        console.log(`❌ 玩家 ${socket.playerId} 拒绝购买地产 ${propertyId}，开始拍卖`)
+
+      } catch (error) {
+        console.error('拒绝购买地产错误:', error)
+        socket.emit('error', error.message)
       }
     })
 

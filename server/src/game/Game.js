@@ -982,6 +982,11 @@ class Game {
 
   // 完成回合，确保事件处理完毕后才切换玩家
   finishTurn() {
+    // 检查是否需要结束拍卖
+    if (this.auctionData.isActive && this.auctionData.timeRemaining <= 0) {
+      this.endAuction()
+    }
+    
     // 只有在当前玩家还是轮到他时才切换
     const currentPlayer = this.getCurrentPlayer()
     if (currentPlayer && this.currentPlayerIndex < this.players.length) {

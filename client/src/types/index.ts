@@ -6,8 +6,13 @@ export interface Player {
   money: number
   properties: string[]
   inJail: boolean
+  jailTurns: number
+  isBankrupt: boolean
   avatar: string
   isOnline: boolean
+  hasShip: boolean
+  buffs: Buff[]
+  monopolies: string[]
 }
 
 export interface Property {
@@ -38,6 +43,9 @@ export interface GameState {
   winner?: string
   chanceCards: Card[]
   communityCards: Card[]
+  auctionData: AuctionData
+  stockData: StockData
+  gameEvents: GameEvent[]
 }
 
 export interface Card {
@@ -91,7 +99,39 @@ export interface TradeOffer {
 }
 
 export interface GameEvent {
+  id: string
   type: string
   data: any
   timestamp: Date
+  turn: number
+}
+
+// 新增接口
+export interface Buff {
+  type: string
+  remaining: number
+  value: number
+}
+
+export interface AuctionData {
+  isActive: boolean
+  propertyId: string | null
+  currentBid: number
+  highestBidder: string | null
+  participants: string[]
+  timeRemaining: number
+  startTime: number | null
+}
+
+export interface Stock {
+  id: string
+  name: string
+  price: number
+  trend: 'up' | 'down' | 'stable'
+  volume: number
+}
+
+export interface StockData {
+  stocks: Stock[]
+  playerStocks: Map<string, Record<string, number>>
 }

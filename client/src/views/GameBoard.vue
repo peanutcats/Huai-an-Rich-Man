@@ -1,7 +1,9 @@
 <template>
   <div class="game-board-container">
-    <!-- 游戏板 -->
-    <div class="game-board">
+    <!-- 左侧主要游戏区域 -->
+    <div class="main-game-area">
+      <!-- 游戏板 -->
+      <div class="game-board">
       <!-- 地产格子 -->
       <div 
         v-for="property in boardProperties" 
@@ -94,10 +96,12 @@
       </div>
     </div>
 
-    <!-- 游戏信息面板 -->
+    </div>
+    
+    <!-- 右侧信息面板 -->
     <div class="game-info-panel">
       <!-- 玩家状态 -->
-      <el-card class="players-status">
+      <el-card v-if="activePanel === 'players'" class="players-status">
         <template #header>
           <h3>👥 玩家状态</h3>
         </template>
@@ -130,7 +134,7 @@
       </el-card>
 
       <!-- 当前地产信息 -->
-      <el-card v-if="selectedProperty" class="property-info">
+      <el-card v-if="selectedProperty && activePanel === 'players'" class="property-info">
         <template #header>
           <h3>🏘️ 地产信息</h3>
         </template>
@@ -187,6 +191,12 @@
         </div>
       </el-card>
 
+      <!-- 股票交易面板 -->
+      <StockTradingPanel v-if="showStockPanel" />
+      
+      <!-- 拍卖面板 -->
+      <AuctionPanel v-if="showAuctionPanel" />
+      
       <!-- 聊天区域 -->
       <el-card class="chat-panel">
         <template #header>
@@ -217,6 +227,34 @@
           </el-input>
         </div>
       </el-card>
+      
+      <!-- 功能切换按钮 -->
+      <div class="panel-controls">
+        <el-button-group>
+          <el-button 
+            :type="activePanel === 'players' ? 'primary' : 'default'"
+            @click="activePanel = 'players'"
+            size="small"
+          >
+            👥 玩家
+          </el-button>
+          <el-button 
+            :type="activePanel === 'stock' ? 'primary' : 'default'"
+            @click="activePanel = 'stock'; showStockPanelIfAvailable()"
+            size="small"
+          >
+            📈 股票
+          </el-button>
+          <el-button 
+            :type="activePanel === 'auction' ? 'primary' : 'default'"
+            @click="activePanel = 'auction'"
+            size="small"
+            :disabled="!isAuctionActive"
+          >
+            🔨 拍卖
+          </el-button>
+        </el-button-group>
+      </div>
     </div>
 
     <!-- 游戏结束对话框 -->
@@ -385,6 +423,8 @@ import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/gameStore'
 import { HUAIAN_PROPERTIES, getPropertyColor, calculateRent } from '@/utils/gameData'
 import type { Property, Player } from '@/types'
+import StockTradingPanel from '@/components/StockTradingPanel.vue'
+import AuctionPanel from '@/components/AuctionPanel.vue'
 
 // 扩展 window 对象类型
 declare global {
@@ -405,6 +445,7 @@ const showGameEnd = ref(false)
 const showPlayerDetailsModal = ref(false)
 const showEventDialog = ref(false)
 const currentEventProperty = ref<Property | null>(null)
+const activePanel = ref('players')
 
 // 事件对话框数据
 const eventDialog = ref({
@@ -437,10 +478,29 @@ const finalRankings = computed(() => {
   return [...gameStore.gameState.players].sort((a, b) => b.money - a.money)
 })
 
+const showStockPanel = computed(() => {
+  return activePanel.value === 'stock'
+})
+
+const showAuctionPanel = computed(() => {
+  return activePanel.value === 'auction'
+})
+
+const isAuctionActive = computed(() => {
+  return gameStore.gameState?.auctionData?.isActive || false
+})
+
+// 当拍卖开始时自动切换到拍卖面板
+watch(() => isAuctionActive.value, (isActive) => {
+  if (isActive) {
+    activePanel.value = 'auction'
+  }
+})
+
 const getPropertyStyle = (property: Property) => {
   const position = property.position
-  const boardSize = 800
-  const cellSize = 80
+  const boardSize = 1000 // 增大棋盘尺寸
+  const cellSize = 100    // 增大格子尺寸
   const radius = (boardSize - cellSize) / 2
 
   let x, y, rotation = 0
@@ -504,20 +564,20 @@ const getPlayerStyle = (player: Player) => {
   const playerIndex = getPlayerIndex(player.id)
   const totalPlayers = gameStore.gameState?.players.length || 1
   
-  // 在格子内更好地分布玩家位置
-  const maxPlayersPerRow = 2
+  // 在格子内更好地分布玩家位置，使用更大的偏移量
+  const maxPlayersPerRow = 3
   const row = Math.floor(playerIndex / maxPlayersPerRow)
   const col = playerIndex % maxPlayersPerRow
   
-  const offsetX = col * 16 + 8  // 横向偏移
-  const offsetY = row * 16 + 8  // 纵向偏移
+  const offsetX = col * 22 + 10  // 增大横向偏移
+  const offsetY = row * 22 + 10  // 增大纵向偏移
 
   return {
     left: `calc(${propertyStyle.left} + ${offsetX}px)`,
     top: `calc(${propertyStyle.top} + ${offsetY}px)`,
     backgroundColor: player.color,
-    border: `2px solid ${player.color}`,
-    boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+    border: `3px solid white`,
+    boxShadow: `0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px ${player.color}`
   }
 }
 
@@ -800,6 +860,10 @@ const handlePropertyPurchase = async () => {
 
 // 处理拒绝购买
 const handlePropertyDecline = () => {
+  if (currentEventProperty.value) {
+    // 调用拒绝购买API，触发拍卖
+    gameStore.declineProperty(currentEventProperty.value.id)
+  }
   showEventDialog.value = false
   currentEventProperty.value = null
   // 发送确认事件到服务器以完成回合
@@ -846,6 +910,14 @@ watch(() => gameStore.gameState?.phase, (phase) => {
   }
 })
 
+// 显示股票面板时触发股票数据获取
+const showStockPanelIfAvailable = () => {
+  if (activePanel.value === 'stock') {
+    // 触发股票数据获取
+    gameStore.getStockData()
+  }
+}
+
 // 移除旧的位置监听逻辑，现在使用服务器事件驱动
 </script>
 
@@ -859,10 +931,17 @@ watch(() => gameStore.gameState?.phase, (phase) => {
   font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
 }
 
+.main-game-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .game-board {
   position: relative;
-  width: 800px;
-  height: 800px;
+  width: 1000px;
+  height: 1000px;
   background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
   border: 8px solid #495057;
   border-radius: 25px;
@@ -880,20 +959,20 @@ watch(() => gameStore.gameState?.phase, (phase) => {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
-  font-weight: 600;
-  color: #2c3e50;
+  font-size: 13px;  /* 增大字体 */
+  font-weight: 700;  /* 加粗字体 */
+  color: #1a202c;    /* 更深的文字颜色 */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
   border: 3px solid #dee2e6;
-  border-radius: 12px;
-  padding: 6px 4px;
+  border-radius: 15px;  /* 增大圆角 */
+  padding: 8px 6px;    /* 增大内边距 */
   text-align: center;
   overflow: hidden;
   box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    0 6px 12px rgba(0, 0, 0, 0.15),  /* 增强阴影 */
+    inset 0 2px 4px rgba(255, 255, 255, 0.9);
 }
 
 .property-cell:hover {
@@ -907,37 +986,56 @@ watch(() => gameStore.gameState?.phase, (phase) => {
 
 .property-cell.owned {
   border-color: #28a745;
+  border-width: 4px;  /* 增加边框宽度以突出拥有状态 */
   background: linear-gradient(145deg, #d4edda 0%, #c3e6cb 100%);
   box-shadow: 
-    0 6px 12px rgba(40, 167, 69, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    0 8px 16px rgba(40, 167, 69, 0.3),  /* 增强阴影 */
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    0 0 0 2px rgba(40, 167, 69, 0.3);  /* 外发光效果 */
 }
 
 .property-cell.owned-by-current {
   border-color: #ffc107;
+  border-width: 4px;
   background: linear-gradient(145deg, #fff3cd 0%, #fce4a8 100%);
   box-shadow: 
-    0 6px 12px rgba(255, 193, 7, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    0 8px 16px rgba(255, 193, 7, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    0 0 0 2px rgba(255, 193, 7, 0.4);
+  animation: currentPlayerGlow 2s infinite alternate;
+}
+
+@keyframes currentPlayerGlow {
+  0% { 
+    box-shadow: 
+      0 8px 16px rgba(255, 193, 7, 0.4),
+      inset 0 2px 4px rgba(255, 255, 255, 0.9),
+      0 0 0 2px rgba(255, 193, 7, 0.4);
+  }
+  100% { 
+    box-shadow: 
+      0 8px 16px rgba(255, 193, 7, 0.6),
+      inset 0 2px 4px rgba(255, 255, 255, 0.9),
+      0 0 0 3px rgba(255, 193, 7, 0.6);
+  }
 }
 
 .owner-indicator {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 32px;
-  height: 32px;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
-  border: 3px solid white;
+  border: 2px solid white;
   box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 3px 6px rgba(0, 0, 0, 0.3),
     inset 0 1px 2px rgba(255, 255, 255, 0.3);
   z-index: 15;
   backdrop-filter: blur(4px);
@@ -961,57 +1059,86 @@ watch(() => gameStore.gameState?.phase, (phase) => {
 }
 
 .property-name {
-  font-size: 10px;
-  line-height: 1.2;
-  margin: 2px 0;
-  font-weight: 700;
+  font-size: 12px;  /* 增大字体 */
+  line-height: 1.3;  /* 调整行高 */
+  margin: 3px 0;
+  font-weight: 800;  /* 更加粗体 */
   text-align: center;
-  color: #2c3e50;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-  /* 确保文字方向朝下 */
+  color: #1a202c;    /* 更深的颜色 */
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);  /* 增强文字阴影 */
   writing-mode: horizontal-tb;
   direction: ltr;
+  /* 添加文字描边效果提高对比度 */
+  -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.1);
 }
 
 .property-price {
-  font-size: 9px;
-  color: #495057;
-  font-weight: 600;
-  margin: 1px 0;
+  font-size: 10px;  /* 增大字体 */
+  color: #2d3748;   /* 更深的颜色 */
+  font-weight: 700; /* 加粗 */
+  margin: 2px 0;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .property-houses {
-  font-size: 9px;
-  color: #28a745;
-  font-weight: 600;
-  margin: 1px 0;
+  font-size: 10px;  /* 增大字体 */
+  color: #22543d;   /* 更深的绿色 */
+  font-weight: 700;
+  margin: 2px 0;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
 }
 
 .player-piece {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 36px;   /* 增大玩家棋子 */
+  height: 36px;
   border-radius: 50%;
-  border: 3px solid #fff;
+  border: 4px solid #fff;  /* 增加边框宽度 */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 16px;  /* 增大字体 */
   font-weight: bold;
   color: #fff;
-  z-index: 25;
+  z-index: 30;  /* 提高层级，确保在所有元素之上 */
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    0 6px 16px rgba(0, 0, 0, 0.5),  /* 增强阴影 */
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    0 0 0 2px rgba(0, 0, 0, 0.1);  /* 外边框 */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);  /* 增强文字阴影 */
+  /* 添加脉冲动画以提高可见性 */
+  animation: playerPulse 3s infinite ease-in-out;
+}
+
+@keyframes playerPulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 
+      0 6px 16px rgba(0, 0, 0, 0.5),
+      inset 0 2px 4px rgba(255, 255, 255, 0.3),
+      0 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+  50% { 
+    transform: scale(1.1);
+    box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.6),
+      inset 0 2px 4px rgba(255, 255, 255, 0.3),
+      0 0 0 3px rgba(255, 255, 255, 0.3);
+  }
 }
 
 .player-piece:hover {
-  transform: scale(1.2);
+  transform: scale(1.3) !important;
   box-shadow: 
-    0 6px 16px rgba(0, 0, 0, 0.5),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    0 10px 24px rgba(0, 0, 0, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    0 0 0 4px rgba(255, 255, 255, 0.5);
+  z-index: 35;
+  animation: none;  /* 停止脉冲动画 */
 }
 
 .center-area {
@@ -1019,19 +1146,19 @@ watch(() => gameStore.gameState?.phase, (phase) => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 380px;
-  height: 380px;
+  width: 480px;  /* 增大中央区域 */
+  height: 480px;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.9) 100%);
-  border-radius: 20px;
+  border-radius: 25px;  /* 增大圆角 */
   box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.15),
-    inset 0 2px 8px rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 30px;
+    0 20px 40px rgba(0, 0, 0, 0.2),  /* 增强阴影 */
+    inset 0 4px 12px rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  padding: 40px;  /* 增大内边距 */
   display: grid;
   grid-template-rows: auto auto 1fr;
-  gap: 20px;
+  gap: 25px;
   text-align: center;
 }
 
@@ -1160,11 +1287,56 @@ watch(() => gameStore.gameState?.phase, (phase) => {
 }
 
 .game-info-panel {
-  flex: 1;
+  width: 400px;  /* 增大信息面板宽度 */
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 350px;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+/* 面板控制按钮 */
+.panel-controls {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.panel-controls .el-button-group {
+  width: 100%;
+}
+
+.panel-controls .el-button {
+  flex: 1;
+  border-radius: 0;
+}
+
+.panel-controls .el-button:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.panel-controls .el-button:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* 优化滚动条 */
+.game-info-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.game-info-panel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.game-info-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.game-info-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .players-status, .property-info, .chat-panel {

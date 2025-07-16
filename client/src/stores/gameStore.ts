@@ -32,8 +32,8 @@ export const useGameStore = defineStore('game', () => {
   function initializeSocket() {
     if (socket.value) return
 
-    console.log('正在连接到服务器: http://localhost:8081')
-    socket.value = io('http://localhost:8081')
+    console.log('正在连接到服务器: http://localhost:8080')
+    socket.value = io('http://localhost:8080')
     
     socket.value.on('connect', () => {
       console.log('Socket.IO 连接成功')
@@ -310,6 +310,11 @@ export const useGameStore = defineStore('game', () => {
     tradeOffers.value = []
   }
 
+  function declineProperty(propertyId: string) {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('declineProperty', { roomId: currentRoom.value.id, propertyId })
+  }
+
   function confirmEvent() {
     if (!socket.value || !currentRoom.value) return
     socket.value.emit('confirmEvent', { roomId: currentRoom.value.id })
@@ -321,13 +326,47 @@ export const useGameStore = defineStore('game', () => {
 
   // 金融系统方法
   function startAuction(propertyId: string, startingBid: number = 0) {
-    if (!socket.value || !currentRoom.value) return
-    socket.value.emit('startAuction', { propertyId, startingBid })
+    if (!socket.value || !currentRoom.value) return Promise.reject('No connection')
+    
+    return new Promise((resolve, reject) => {
+      socket.value!.emit('startAuction', { propertyId, startingBid })
+      
+      const timeout = setTimeout(() => {
+        reject(new Error('Auction start timeout'))
+      }, 5000)
+      
+      socket.value!.once('auctionStarted', (data) => {
+        clearTimeout(timeout)
+        resolve(data)
+      })
+      
+      socket.value!.once('error', (error) => {
+        clearTimeout(timeout)
+        reject(error)
+      })
+    })
   }
 
   function placeBid(bidAmount: number) {
-    if (!socket.value || !currentRoom.value) return
-    socket.value.emit('placeBid', { bidAmount })
+    if (!socket.value || !currentRoom.value) return Promise.reject('No connection')
+    
+    return new Promise((resolve, reject) => {
+      socket.value!.emit('placeBid', { bidAmount })
+      
+      const timeout = setTimeout(() => {
+        reject(new Error('Bid placement timeout'))
+      }, 5000)
+      
+      socket.value!.once('bidPlaced', (data) => {
+        clearTimeout(timeout)
+        resolve(data)
+      })
+      
+      socket.value!.once('error', (error) => {
+        clearTimeout(timeout)
+        reject(error)
+      })
+    })
   }
 
   function mortgageProperty(propertyId: string) {
@@ -341,18 +380,64 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function buyStock(stockId: string, quantity: number) {
-    if (!socket.value || !currentRoom.value) return
-    socket.value.emit('buyStock', { stockId, quantity })
+    if (!socket.value || !currentRoom.value) return Promise.reject('No connection')
+    
+    return new Promise((resolve, reject) => {
+      socket.value!.emit('buyStock', { stockId, quantity })
+      
+      const timeout = setTimeout(() => {
+        reject(new Error('Stock purchase timeout'))
+      }, 5000)
+      
+      socket.value!.once('stockBought', (data) => {
+        clearTimeout(timeout)
+        resolve(data)
+      })
+      
+      socket.value!.once('error', (error) => {
+        clearTimeout(timeout)
+        reject(error)
+      })
+    })
   }
 
   function sellStock(stockId: string, quantity: number) {
-    if (!socket.value || !currentRoom.value) return
-    socket.value.emit('sellStock', { stockId, quantity })
+    if (!socket.value || !currentRoom.value) return Promise.reject('No connection')
+    
+    return new Promise((resolve, reject) => {
+      socket.value!.emit('sellStock', { stockId, quantity })
+      
+      const timeout = setTimeout(() => {
+        reject(new Error('Stock sale timeout'))
+      }, 5000)
+      
+      socket.value!.once('stockSold', (data) => {
+        clearTimeout(timeout)
+        resolve(data)
+      })
+      
+      socket.value!.once('error', (error) => {
+        clearTimeout(timeout)
+        reject(error)
+      })
+    })
   }
 
   function getStockData() {
-    if (!socket.value || !currentRoom.value) return
-    socket.value.emit('getStockData')
+    if (!socket.value || !currentRoom.value) return Promise.reject('No connection')
+    
+    return new Promise((resolve, reject) => {
+      socket.value!.emit('getStockData')
+      
+      const timeout = setTimeout(() => {
+        reject(new Error('Stock data timeout'))
+      }, 5000)
+      
+      socket.value!.once('stockData', (data) => {
+        clearTimeout(timeout)
+        resolve(data)
+      })
+    })
   }
 
   return {
@@ -388,6 +473,7 @@ export const useGameStore = defineStore('game', () => {
     redeemProperty,
     buyStock,
     sellStock,
-    getStockData
+    getStockData,
+    declineProperty
   }
 })
