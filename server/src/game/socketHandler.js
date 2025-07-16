@@ -292,6 +292,114 @@ function gameSocketHandler(io) {
       }
     })
 
+    // 拍卖系统事件
+    socket.on('startAuction', async (data) => {
+      try {
+        const { propertyId, startingBid } = data
+        const game = games.get(socket.roomId)
+        
+        if (game) {
+          const auctionData = await game.startAuction(propertyId, startingBid)
+          io.to(socket.roomId).emit('auctionStarted', auctionData)
+          io.to(socket.roomId).emit('gameState', game.getState())
+        }
+      } catch (error) {
+        socket.emit('error', error.message)
+      }
+    })
+
+    socket.on('placeBid', async (data) => {
+      try {
+        const { bidAmount } = data
+        const game = games.get(socket.roomId)
+        
+        if (game) {
+          const auctionData = await game.placeBid(socket.playerId, bidAmount)
+          io.to(socket.roomId).emit('bidPlaced', auctionData)
+          io.to(socket.roomId).emit('gameState', game.getState())
+        }
+      } catch (error) {
+        socket.emit('error', error.message)
+      }
+    })
+
+    // 抵押系统事件
+    socket.on('mortgageProperty', async (data) => {
+      try {
+        const { propertyId } = data
+        const game = games.get(socket.roomId)
+        
+        if (game) {
+          const mortgageValue = await game.mortgageProperty(socket.playerId, propertyId)
+          socket.emit('propertyMortgaged', { propertyId, mortgageValue })
+          io.to(socket.roomId).emit('gameState', game.getState())
+        }
+      } catch (error) {
+        socket.emit('error', error.message)
+      }
+    })
+
+    socket.on('redeemProperty', async (data) => {
+      try {
+        const { propertyId } = data
+        const game = games.get(socket.roomId)
+        
+        if (game) {
+          const redeemCost = await game.redeemProperty(socket.playerId, propertyId)
+          socket.emit('propertyRedeemed', { propertyId, redeemCost })
+          io.to(socket.roomId).emit('gameState', game.getState())
+        }
+      } catch (error) {
+        socket.emit('error', error.message)
+      }
+    })
+
+    // 股票交易事件
+    socket.on('buyStock', async (data) => {
+      try {
+        const { stockId, quantity } = data
+        const game = games.get(socket.roomId)
+        
+        if (game) {
+          const result = await game.buyStock(socket.playerId, stockId, quantity)
+          socket.emit('stockBought', { stockId, ...result })
+          io.to(socket.roomId).emit('gameState', game.getState())
+        }
+      } catch (error) {
+        socket.emit('error', error.message)
+      }
+    })
+
+    socket.on('sellStock', async (data) => {
+      try {
+        const { stockId, quantity } = data
+        const game = games.get(socket.roomId)
+        
+        if (game) {
+          const result = await game.sellStock(socket.playerId, stockId, quantity)
+          socket.emit('stockSold', { stockId, ...result })
+          io.to(socket.roomId).emit('gameState', game.getState())
+        }
+      } catch (error) {
+        socket.emit('error', error.message)
+      }
+    })
+
+    socket.on('getStockData', () => {
+      try {
+        const game = games.get(socket.roomId)
+        if (game) {
+          socket.emit('stockData', {
+            stocks: game.stockData.stocks,
+            playerStocks: game.getPlayerStocks(socket.playerId),
+            stockValue: game.calculateStockValue(socket.playerId)
+          })
+        }
+      } catch (error) {
+        socket.emit('error', error.message)
+      }
+    })
+
     // 玩家断开连接
     socket.on('disconnect', () => {
       console.log(`🔌 玩家断开连接: ${socket.id}`)

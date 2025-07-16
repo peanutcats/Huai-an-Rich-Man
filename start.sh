@@ -62,7 +62,7 @@ echo ""
 # 启动开发服务器
 echo "🚀 启动开发服务器..."
 echo "   -> 前端服务: http://localhost:3000"
-echo "   -> 后端服务: http://localhost:8080"
+echo "   -> 后端服务: http://localhost:8081"
 echo ""
 
 # 提示用户

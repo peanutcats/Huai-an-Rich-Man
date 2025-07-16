@@ -159,9 +159,9 @@
         <el-form-item label="起始资金">
           <el-input-number
             v-model="gameSettings.startingMoney"
-            :min="10000"
-            :max="50000"
-            :step="1000"
+            :min="1000"
+            :max="10000"
+            :step="500"
           />
         </el-form-item>
         
@@ -205,7 +205,7 @@ const chatMessage = ref('')
 const chatContainer = ref<HTMLElement>()
 const showSettings = ref(false)
 const gameSettings = ref({
-  startingMoney: 15000,
+  startingMoney: 1500,
   maxTurns: 100,
   enableTrading: true,
   enableAuction: true

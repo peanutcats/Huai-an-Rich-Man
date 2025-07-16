@@ -2,68 +2,68 @@ import type { Property } from '@/types'
 
 export const HUAIAN_PROPERTIES: Property[] = [
   // 起点
-  { id: '0', name: '起点', position: 0, price: 0, rent: 0, group: 'special', houses: 0, hotels: 0, mortgaged: false, description: '每次经过或停留获得2000元', culture: '淮安市政府广场，城市的政治中心' },
+  { id: '0', name: '起点', position: 0, price: 0, rent: 0, group: 'special', houses: 0, hotels: 0, mortgaged: false, description: '每次经过获得200元', culture: '淮安市政府广场，城市的政治中心' },
   
-  // 第一组 - 淮安区
-  { id: '1', name: '淮安府署', position: 1, price: 600, rent: 20, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '明清时期淮安府衙门所在地', culture: '淮安历史文化的重要象征，见证了淮安作为漕运总督府的辉煌' },
+  // 棕色组
+  { id: '1', name: '河下古镇', position: 1, price: 60, rent: 2, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '千年古镇，保留明清街巷，运河文化精华', culture: '淮安历史文化名镇，古代漕运重镇', housePrice: 50 },
   { id: '2', name: '机会', position: 2, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
-  { id: '3', name: '河下古镇', position: 3, price: 600, rent: 40, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '千年古镇，文化底蕴深厚', culture: '淮安历史文化名镇，古代漕运重镇', financialTip: '旅游业投资具有长期稳定回报的特点' },
+  { id: '3', name: '淮安驸马巷', position: 3, price: 60, rent: 4, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '古巷道，连接历史与民俗', culture: '明清时期的古街巷，承载着深厚的历史文化', housePrice: 50 },
   { id: '4', name: '所得税', position: 4, price: 0, rent: 0, group: 'tax', houses: 0, hotels: 0, mortgaged: false, description: '缴纳所得税200元' },
-  { id: '5', name: '淮安东站', position: 5, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '高铁枢纽站', culture: '连接南北的重要交通枢纽', financialTip: '交通基础设施是经济发展的重要支撑' },
+  { id: '5', name: '淮安东站', position: 5, price: 200, rent: 25, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '高铁枢纽站', culture: '连接南北的重要交通枢纽' },
   
-  // 第二组 - 清江浦区
-  { id: '6', name: '清晏园', position: 6, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '淮安最著名的古典园林', culture: '江南园林艺术的代表作品' },
+  // 浅蓝组
+  { id: '6', name: '周恩来故居', position: 6, price: 100, rent: 6, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '伟人童年居所，红色教育基地', culture: '中华人民共和国第一任总理周恩来的童年居所', housePrice: 50 },
   { id: '7', name: '公共服务', position: 7, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
-  { id: '8', name: '淮安万达广场', position: 8, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '现代化商业中心', financialTip: '商业地产投资需要考虑人流量和消费能力' },
-  { id: '9', name: '里运河', position: 9, price: 1200, rent: 80, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '京杭大运河淮安段', culture: '世界文化遗产，千年水运文化', financialTip: '文化旅游资源具有独特的投资价值' },
+  { id: '8', name: '吴承恩故居', position: 8, price: 120, rent: 8, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '《西游记》作者故居，文学地标', culture: '明代小说家吴承恩的故居，《西游记》诞生地', housePrice: 50 },
+  { id: '9', name: '里运河', position: 9, price: 120, rent: 8, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '京杭大运河淮安段', culture: '世界文化遗产，千年水运文化', housePrice: 50 },
   
   // 监狱
-  { id: '10', name: '监狱', position: 10, price: 0, rent: 0, group: 'jail', houses: 0, hotels: 0, mortgaged: false, description: '临时拘留所' },
+  { id: '10', name: '淮安府衙审判', position: 10, price: 0, rent: 0, group: 'jail', houses: 0, hotels: 0, mortgaged: false, description: '临时拘留，支付罚金或关押' },
   
-  // 第三组 - 淮阴区
-  { id: '11', name: '韩信故里', position: 11, price: 1400, rent: 100, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '兵仙韩信的故乡', culture: '韩信点兵、韩信练兵的历史文化景点' },
-  { id: '12', name: '淮阴电力公司', position: 12, price: 1500, rent: 0, group: 'utility', houses: 0, hotels: 0, mortgaged: false, description: '电力供应公司', financialTip: '公用事业投资具有稳定的现金流' },
-  { id: '13', name: '淮阴工业园', position: 13, price: 1400, rent: 100, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '现代制造业基地', financialTip: '工业园区投资要关注产业政策和配套设施' },
-  { id: '14', name: '淮阴师范学院', position: 14, price: 1600, rent: 120, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '知名师范院校', culture: '教育文化重镇，培养人才的摇篮' },
-  { id: '15', name: '淮安汽车站', position: 15, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '长途客运枢纽' },
+  // 粉红组
+  { id: '11', name: '淮安府署', position: 11, price: 140, rent: 10, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '古代官衙，淮安行政中心遗迹', culture: '明清时期淮安府衙门所在地，见证淮安作为漕运总督府的辉煌', housePrice: 100 },
+  { id: '12', name: '淮阴电力', position: 12, price: 150, rent: 0, group: 'utility', houses: 0, hotels: 0, mortgaged: false, description: '电力供应公司' },
+  { id: '13', name: '镇淮楼', position: 13, price: 140, rent: 10, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '古城标志性楼阁，俯瞰运河', culture: '淮安古城的标志性建筑', housePrice: 100 },
+  { id: '14', name: '中国漕运博物馆', position: 14, price: 160, rent: 12, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '展示大运河漕运历史', culture: '全国唯一以漕运为主题的博物馆', housePrice: 100 },
+  { id: '15', name: '汽车站', position: 15, price: 200, rent: 25, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '长途客运枢纽' },
   
-  // 第四组 - 经济技术开发区
-  { id: '16', name: '富士康科技园', position: 16, price: 1800, rent: 140, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '高科技制造基地', financialTip: '高科技产业投资风险较高但回报潜力大' },
+  // 橙色组
+  { id: '16', name: '中国淮扬菜博物馆', position: 16, price: 180, rent: 14, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '淮扬菜文化展示厅，美食圣地', culture: '中国四大菜系之一淮扬菜的文化殿堂', buff: 'food', housePrice: 100 },
   { id: '17', name: '公共服务', position: 17, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
-  { id: '18', name: '淮安软件园', position: 18, price: 1800, rent: 140, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '软件产业聚集区', financialTip: '软件产业具有轻资产、高增长的特点' },
-  { id: '19', name: '淮安综合保税区', position: 19, price: 2000, rent: 160, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '对外贸易特殊监管区', financialTip: '保税区享受特殊政策，适合进出口贸易投资' },
+  { id: '18', name: '楚秀园', position: 18, price: 180, rent: 14, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '古典园林，园林与淮扬园林代表', culture: '淮安最著名的古典园林，江南园林艺术的代表', housePrice: 100 },
+  { id: '19', name: '淮安里运河文化长廊', position: 19, price: 200, rent: 16, group: 'orange', houses: 0, hotels: 0, mortgaged: false, description: '运河畔文化走廊，现代休闲带', culture: '展现运河文化的现代景观带', housePrice: 100 },
   
-  // 免费停车
-  { id: '20', name: '免费停车', position: 20, price: 0, rent: 0, group: 'parking', houses: 0, hotels: 0, mortgaged: false, description: '免费停车场' },
+  // 运河码头（替换免费停车）
+  { id: '20', name: '运河码头', position: 20, price: 0, rent: 0, group: 'parking', houses: 0, hotels: 0, mortgaged: false, description: '抽取运河宝藏卡，获得现金或道具' },
   
-  // 第五组 - 涟水县
-  { id: '21', name: '涟水公园', position: 21, price: 2200, rent: 180, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '涟水县城市公园', culture: '涟水人民休闲娱乐的好去处' },
+  // 红色组
+  { id: '21', name: '周恩来纪念馆', position: 21, price: 220, rent: 18, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '纪念伟人的专题馆，景区核心', culture: '为纪念周恩来总理而建的专题纪念馆', housePrice: 150 },
   { id: '22', name: '机会', position: 22, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
-  { id: '23', name: '涟水机场', position: 23, price: 2200, rent: 180, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '支线机场', financialTip: '航空运输业投资需要考虑客流量和货运需求' },
-  { id: '24', name: '涟水工业园', position: 24, price: 2400, rent: 200, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '县域工业发展基地' },
-  { id: '25', name: '新长铁路', position: 25, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '重要铁路干线' },
+  { id: '23', name: '淮安大剧院', position: 23, price: 220, rent: 18, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '现代文化艺术中心，演出地标', culture: '淮安市标志性文化建筑', housePrice: 150 },
+  { id: '24', name: '淮安市体育中心', position: 24, price: 240, rent: 20, group: 'red', houses: 0, hotels: 0, mortgaged: false, description: '体育赛事举办地，城市活力象征', culture: '淮安市重要的体育文化设施', housePrice: 150 },
+  { id: '25', name: '新长铁路', position: 25, price: 200, rent: 25, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '重要铁路干线' },
   
-  // 第六组 - 洪泽区
-  { id: '26', name: '洪泽湖', position: 26, price: 2600, rent: 220, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '中国第四大淡水湖', culture: '洪泽湖大闸蟹、生态旅游胜地', financialTip: '生态旅游投资要平衡经济效益和环境保护' },
-  { id: '27', name: '洪泽湖大堤', position: 27, price: 2600, rent: 220, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '古代水利工程', culture: '明清时期的水利建设杰作' },
-  { id: '28', name: '淮安自来水公司', position: 28, price: 1500, rent: 0, group: 'utility', houses: 0, hotels: 0, mortgaged: false, description: '城市供水服务', financialTip: '水务投资属于公用事业，收益稳定' },
-  { id: '29', name: '洪泽湖渔港', position: 29, price: 2800, rent: 240, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '淡水渔业基地', financialTip: '渔业投资要关注环保政策和可持续发展' },
+  // 黄色组
+  { id: '26', name: '白马湖旅游景区', position: 26, price: 260, rent: 22, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '湖泊生态区，休闲度假胜地', culture: '白马湖生态旅游区，天然氧吧', housePrice: 150 },
+  { id: '27', name: '淮安西游乐园', position: 27, price: 260, rent: 22, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '以《西游记》主题的乐园', culture: '以吴承恩《西游记》为主题的大型主题乐园', housePrice: 150 },
+  { id: '28', name: '自来水公司', position: 28, price: 150, rent: 0, group: 'utility', houses: 0, hotels: 0, mortgaged: false, description: '城市供水服务' },
+  { id: '29', name: '古淮河文化生态景区', position: 29, price: 280, rent: 24, group: 'yellow', houses: 0, hotels: 0, mortgaged: false, description: '淮河古文化与生态融合', culture: '古淮河文化和现代生态理念的完美结合', housePrice: 150 },
   
   // 去监狱
   { id: '30', name: '去监狱', position: 30, price: 0, rent: 0, group: 'gotojail', houses: 0, hotels: 0, mortgaged: false, description: '直接前往监狱' },
   
-  // 第七组 - 盱眙县
-  { id: '31', name: '盱眙龙虾城', position: 31, price: 3000, rent: 260, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '中国龙虾之都', culture: '盱眙十三香龙虾闻名全国', financialTip: '餐饮业投资要注重品牌建设和食品安全' },
-  { id: '32', name: '第一山国家森林公园', position: 32, price: 3000, rent: 260, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '国家级森林公园', culture: '苏北第一山，历史文化名山' },
+  // 绿色组
+  { id: '31', name: '淮安国际食品博览中心', position: 31, price: 300, rent: 26, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '食品产业博览会场馆，体现淮安经济', culture: '淮安食品产业发展的展示窗口', housePrice: 200 },
+  { id: '32', name: '江苏食品药品职业技术学院', position: 32, price: 300, rent: 26, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '淮安本地高校，培养食品相关人才', culture: '专业的食品药品类高等职业院校', special: 'lab', housePrice: 200 },
   { id: '33', name: '公共服务', position: 33, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
-  { id: '34', name: '盱眙古城', position: 34, price: 3200, rent: 280, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '千年古县', culture: '盱眙历史悠久，文化底蕴深厚' },
-  { id: '35', name: '宁淮高速', position: 35, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '连接南京的高速公路' },
+  { id: '34', name: '淮阴博物馆', position: 34, price: 320, rent: 28, group: 'green', houses: 0, hotels: 0, mortgaged: false, description: '地方历史博物馆，收藏淮安文物', culture: '展示淮安地区历史文化的重要场所', housePrice: 200 },
+  { id: '35', name: '宁淮高速', position: 35, price: 200, rent: 25, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '连接南京的高速公路' },
   
-  // 第八组 - 金湖县
+  // 深蓝组
   { id: '36', name: '机会', position: 36, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
-  { id: '37', name: '金湖荷花荡', position: 37, price: 3500, rent: 350, group: 'darkblue', houses: 0, hotels: 0, mortgaged: false, description: '万亩荷花观赏地', culture: '金湖荷花节，生态旅游胜地', financialTip: '农业观光旅游投资要考虑季节性因素' },
+  { id: '37', name: '淮安国际商城步行街', position: 37, price: 350, rent: 35, group: 'darkblue', houses: 0, hotels: 0, mortgaged: false, description: '商业繁华区，购物天堂', culture: '淮安最繁华的商业中心', housePrice: 200 },
   { id: '38', name: '奢侈税', position: 38, price: 0, rent: 0, group: 'tax', houses: 0, hotels: 0, mortgaged: false, description: '缴纳奢侈税750元' },
-  { id: '39', name: '金湖水上森林', position: 39, price: 4000, rent: 500, group: 'darkblue', houses: 0, hotels: 0, mortgaged: false, description: '独特的水上森林景观', culture: '国家湿地公园，生态保护典范', financialTip: '生态旅游投资具有可持续发展价值' }
+  { id: '39', name: '江苏银行淮安分行', position: 39, price: 350, rent: 35, group: 'darkblue', houses: 0, hotels: 0, mortgaged: false, description: '金融服务机构，代表现代经济支柱', special: 'bank', housePrice: 200 }
 ]
 
 export const CHANCE_CARDS = [
@@ -112,19 +112,51 @@ export function calculateRent(property: Property): number {
   return Math.floor(rent)
 }
 
+export const CANAL_TREASURE_CARDS = [
+  { id: 'treasure1', type: 'treasure', title: '运河宝藏', description: '发现古代商人遗留的宝藏', action: 'addMoney', amount: 2000 },
+  { id: 'treasure2', type: 'treasure', title: '航运特权', description: '获得运河船只，解锁航运模式', action: 'getShip', amount: 0 },
+  { id: 'treasure3', type: 'treasure', title: '运河加持', description: '运河相关地产租金提升20%', action: 'canalBonus', amount: 20, duration: 5 },
+  { id: 'treasure4', type: 'treasure', title: '漕运督察', description: '所有玩家向你缴纳100元通行费', action: 'collectFromAll', amount: 100 },
+  { id: 'treasure5', type: 'treasure', title: '商贸兴盛', description: '下次收取租金时翻倍', action: 'doubleRent', amount: 0 },
+  { id: 'treasure6', type: 'treasure', title: '水利工程', description: '建造房屋成本减半（一次）', action: 'buildDiscount', amount: 50 },
+  { id: 'treasure7', type: 'treasure', title: '运河预言', description: '预知下次骰子结果', action: 'foresight', amount: 0 },
+  { id: 'treasure8', type: 'treasure', title: '免疫符', description: '免疫下次监狱或罚款', action: 'immunity', amount: 0 },
+  { id: 'treasure9', type: 'treasure', title: '强制交易令', description: '与任意玩家强制交易一次', action: 'forceTrade', amount: 0 },
+  { id: 'treasure10', type: 'treasure', title: '股市内幕', description: '获得股票内幕消息，股票投资收益翻倍（3回合）', action: 'stockBonus', amount: 100, duration: 3 }
+]
+
+export const GROUP_MONOPOLY_EFFECTS = {
+  brown: { name: '古镇文化区', effect: '租金+15%', bonus: 0.15 },
+  lightblue: { name: '伟人故里', effect: '每回合+20元文化津贴', bonus: 20 },
+  pink: { name: '古建遗址区', effect: '租金+25%', bonus: 0.25 },
+  orange: { name: '淮扬美食区', effect: '每回合随机获得50-200元美食收入', bonus: 'food_income' },
+  red: { name: '现代文化区', effect: '租金+30%', bonus: 0.30 },
+  yellow: { name: '生态旅游区', effect: '每3回合+300元生态奖励', bonus: 'eco_bonus' },
+  green: { name: '教育科研区', effect: '建造成本-25%，租金+35%', bonus: 0.35 },
+  darkblue: { name: '商业金融区', effect: '租金+50%，可进行高级金融操作', bonus: 0.50 },
+  railroad: { name: '交通枢纽', effect: '根据拥有数量倍增租金', bonus: 'railroad_multiplier' },
+  utility: { name: '公用事业', effect: '租金=骰子点数×倍数', bonus: 'utility_multiplier' }
+}
+
 export function getPropertyColor(group: string): string {
   const colors: Record<string, string> = {
-    brown: '#8B4513',
-    lightblue: '#87CEEB',
-    pink: '#FF69B4',
-    orange: '#FFA500',
-    red: '#FF0000',
-    yellow: '#FFFF00',
-    green: '#008000',
-    darkblue: '#000080',
-    railroad: '#000000',
-    utility: '#808080',
-    special: '#FFD700'
+    brown: 'linear-gradient(145deg, #8B4513 0%, #A0522D 100%)',
+    lightblue: 'linear-gradient(145deg, #87CEEB 0%, #B0E0E6 100%)',
+    pink: 'linear-gradient(145deg, #FF69B4 0%, #FFB6C1 100%)',
+    orange: 'linear-gradient(145deg, #FF8C00 0%, #FFA500 100%)',
+    red: 'linear-gradient(145deg, #DC143C 0%, #FF6347 100%)',
+    yellow: 'linear-gradient(145deg, #FFD700 0%, #FFFF99 100%)',
+    green: 'linear-gradient(145deg, #228B22 0%, #32CD32 100%)',
+    darkblue: 'linear-gradient(145deg, #000080 0%, #191970 100%)',
+    railroad: 'linear-gradient(145deg, #2C3E50 0%, #34495E 100%)',
+    utility: 'linear-gradient(145deg, #7F8C8D 0%, #95A5A6 100%)',
+    special: 'linear-gradient(145deg, #F39C12 0%, #F1C40F 100%)',
+    chance: 'linear-gradient(145deg, #E74C3C 0%, #FF6B6B 100%)',
+    community: 'linear-gradient(145deg, #3498DB 0%, #74B9FF 100%)',
+    tax: 'linear-gradient(145deg, #8E44AD 0%, #9B59B6 100%)',
+    jail: 'linear-gradient(145deg, #95A5A6 0%, #BDC3C7 100%)',
+    gotojail: 'linear-gradient(145deg, #E74C3C 0%, #C0392B 100%)',
+    parking: 'linear-gradient(145deg, #1ABC9C 0%, #16A085 100%)'
   }
-  return colors[group] || '#CCCCCC'
+  return colors[group] || 'linear-gradient(145deg, #CCCCCC 0%, #DDDDDD 100%)'
 }

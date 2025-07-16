@@ -32,19 +32,29 @@ export const useGameStore = defineStore('game', () => {
   function initializeSocket() {
     if (socket.value) return
 
-    socket.value = io('http://localhost:8080')
+    console.log('正在连接到服务器: http://localhost:8081')
+    socket.value = io('http://localhost:8081')
     
     socket.value.on('connect', () => {
+      console.log('Socket.IO 连接成功')
       isConnected.value = true
       error.value = null
     })
 
     socket.value.on('disconnect', () => {
+      console.log('Socket.IO 连接断开')
       isConnected.value = false
     })
 
     socket.value.on('error', (err) => {
+      console.error('Socket.IO 连接错误:', err)
       error.value = err.message
+    })
+
+    socket.value.on('connect_error', (err) => {
+      console.error('Socket.IO 连接失败:', err)
+      error.value = err.message
+      isConnected.value = false
     })
 
     socket.value.on('gameState', (state: GameState) => {
@@ -126,6 +136,92 @@ export const useGameStore = defineStore('game', () => {
     socket.value.on('turnCompleted', (data: { playerId: string }) => {
       // 回合完成通知
       console.log(`玩家 ${data.playerId} 完成回合`)
+    })
+
+    // 金融系统事件监听
+    socket.value.on('auctionStarted', (auctionData: any) => {
+      ElNotification({
+        title: '🔨 拍卖开始',
+        message: `${auctionData.propertyName} 开始拍卖！起拍价：¥${auctionData.currentBid.toLocaleString()}`,
+        type: 'info',
+        duration: 3000,
+        position: 'top-right'
+      })
+    })
+
+    socket.value.on('bidPlaced', (auctionData: any) => {
+      ElNotification({
+        title: '💰 新的出价',
+        message: `当前最高出价：¥${auctionData.currentBid.toLocaleString()}`,
+        type: 'warning',
+        duration: 2000,
+        position: 'top-right'
+      })
+    })
+
+    socket.value.on('auctionEnded', (data: any) => {
+      if (data.winnerId) {
+        ElNotification({
+          title: '🎉 拍卖结束',
+          message: `${data.winnerName} 以 ¥${data.finalBid.toLocaleString()} 拍得 ${data.propertyName}`,
+          type: 'success',
+          duration: 4000,
+          position: 'top-right'
+        })
+      } else {
+        ElNotification({
+          title: '❌ 拍卖流拍',
+          message: data.message,
+          type: 'info',
+          duration: 3000,
+          position: 'top-right'
+        })
+      }
+    })
+
+    socket.value.on('propertyMortgaged', (data: { propertyId: string; mortgageValue: number }) => {
+      ElNotification({
+        title: '🏦 抵押成功',
+        message: `地产抵押成功，获得 ¥${data.mortgageValue.toLocaleString()}`,
+        type: 'success',
+        duration: 3000,
+        position: 'top-right'
+      })
+    })
+
+    socket.value.on('propertyRedeemed', (data: { propertyId: string; redeemCost: number }) => {
+      ElNotification({
+        title: '🔑 赎回成功',
+        message: `地产赎回成功，花费 ¥${data.redeemCost.toLocaleString()}`,
+        type: 'success',
+        duration: 3000,
+        position: 'top-right'
+      })
+    })
+
+    socket.value.on('stockBought', (data: { stockId: string; quantity: number; totalCost: number }) => {
+      ElNotification({
+        title: '📈 股票购买',
+        message: `成功购买 ${data.quantity} 股，花费 ¥${data.totalCost.toLocaleString()}`,
+        type: 'success',
+        duration: 3000,
+        position: 'top-right'
+      })
+    })
+
+    socket.value.on('stockSold', (data: { stockId: string; quantity: number; totalValue: number }) => {
+      ElNotification({
+        title: '📉 股票出售',
+        message: `成功出售 ${data.quantity} 股，获得 ¥${data.totalValue.toLocaleString()}`,
+        type: 'success',
+        duration: 3000,
+        position: 'top-right'
+      })
+    })
+
+    socket.value.on('stockData', (data: { stocks: any[]; playerStocks: any; stockValue: number }) => {
+      // 股票数据更新，可以在这里处理股票信息的显示
+      console.log('股票数据更新:', data)
     })
   }
 
@@ -223,6 +319,42 @@ export const useGameStore = defineStore('game', () => {
     error.value = null
   }
 
+  // 金融系统方法
+  function startAuction(propertyId: string, startingBid: number = 0) {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('startAuction', { propertyId, startingBid })
+  }
+
+  function placeBid(bidAmount: number) {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('placeBid', { bidAmount })
+  }
+
+  function mortgageProperty(propertyId: string) {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('mortgageProperty', { propertyId })
+  }
+
+  function redeemProperty(propertyId: string) {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('redeemProperty', { propertyId })
+  }
+
+  function buyStock(stockId: string, quantity: number) {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('buyStock', { stockId, quantity })
+  }
+
+  function sellStock(stockId: string, quantity: number) {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('sellStock', { stockId, quantity })
+  }
+
+  function getStockData() {
+    if (!socket.value || !currentRoom.value) return
+    socket.value.emit('getStockData')
+  }
+
   return {
     socket,
     gameState,
@@ -248,6 +380,14 @@ export const useGameStore = defineStore('game', () => {
     respondToTrade,
     leaveRoom,
     confirmEvent,
-    clearError
+    clearError,
+    // 金融系统方法
+    startAuction,
+    placeBid,
+    mortgageProperty,
+    redeemProperty,
+    buyStock,
+    sellStock,
+    getStockData
   }
 })

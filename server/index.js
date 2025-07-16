@@ -73,7 +73,7 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' })
 })
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8081
 
 server.listen(PORT, () => {
   console.log(`🚀 淮安大富翁游戏服务器启动成功`)

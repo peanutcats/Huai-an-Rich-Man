@@ -446,24 +446,25 @@ const getPropertyStyle = (property: Property) => {
   let x, y, rotation = 0
 
   if (position <= 10) {
-    // 底边
+    // 底边 - 文字保持向下
     x = boardSize - cellSize - (position * cellSize)
     y = boardSize - cellSize
+    rotation = 0
   } else if (position <= 20) {
-    // 左边
+    // 左边 - 文字保持向下
     x = 0
     y = boardSize - cellSize - ((position - 10) * cellSize)
-    rotation = 90
+    rotation = 0
   } else if (position <= 30) {
-    // 顶边
+    // 顶边 - 文字保持向下
     x = (position - 20) * cellSize
     y = 0
-    rotation = 180
+    rotation = 0
   } else {
-    // 右边
+    // 右边 - 文字保持向下
     x = boardSize - cellSize
     y = (position - 30) * cellSize
-    rotation = 270
+    rotation = 0
   }
 
   return {
@@ -472,23 +473,51 @@ const getPropertyStyle = (property: Property) => {
     width: `${cellSize}px`,
     height: `${cellSize}px`,
     transform: `rotate(${rotation}deg)`,
-    backgroundColor: getPropertyColor(property.group),
-    borderColor: property.owner ? '#4CAF50' : '#ddd'
+    background: getPropertyColor(property.group),
+    borderColor: property.owner ? '#28a745' : '#dee2e6'
   }
 }
 
 const getPlayerStyle = (player: Player) => {
   const position = player.position
   const property = boardProperties.value.find(p => p.position === position)
-  if (!property) return {}
-
-  const propertyStyle = getPropertyStyle(property)
-  const offset = getPlayerIndex(player.id) * 5
+  
+  // 如果找不到对应的属性，则使用位置直接计算
+  let propertyStyle
+  if (property) {
+    propertyStyle = getPropertyStyle(property)
+  } else {
+    // 为特殊格子创建临时属性对象
+    const tempProperty = {
+      position: position,
+      group: 'special',
+      name: '',
+      price: 0,
+      rent: 0,
+      houses: 0,
+      hotels: 0,
+      mortgaged: false
+    } as Property
+    propertyStyle = getPropertyStyle(tempProperty)
+  }
+  
+  const playerIndex = getPlayerIndex(player.id)
+  const totalPlayers = gameStore.gameState?.players.length || 1
+  
+  // 在格子内更好地分布玩家位置
+  const maxPlayersPerRow = 2
+  const row = Math.floor(playerIndex / maxPlayersPerRow)
+  const col = playerIndex % maxPlayersPerRow
+  
+  const offsetX = col * 16 + 8  // 横向偏移
+  const offsetY = row * 16 + 8  // 纵向偏移
 
   return {
-    left: `calc(${propertyStyle.left} + ${offset}px)`,
-    top: `calc(${propertyStyle.top} + ${offset}px)`,
-    backgroundColor: player.color
+    left: `calc(${propertyStyle.left} + ${offsetX}px)`,
+    top: `calc(${propertyStyle.top} + ${offsetY}px)`,
+    backgroundColor: player.color,
+    border: `2px solid ${player.color}`,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
   }
 }
 
@@ -581,6 +610,10 @@ const handleServerEvent = (eventData: any) => {
         hotels: 0,
         mortgaged: false
       })
+      break
+      
+    case 'treasure':
+      showEventNotification('🎁 运河宝藏', eventData.card.description, '🏺')
       break
       
     case 'chance':
@@ -691,6 +724,26 @@ const showPropertyUpgradeDialog = (upgradeData: any) => {
   showEventDialog.value = true
 }
 const showEventNotification = (title: string, message: string, icon: string) => {
+  // 添加卡片抽取动画效果
+  const animateCard = () => {
+    const cardElement = document.createElement('div')
+    cardElement.className = 'floating-card'
+    cardElement.innerHTML = `
+      <div class="card-content">
+        <div class="card-icon">${icon}</div>
+        <div class="card-title">${title}</div>
+      </div>
+    `
+    document.body.appendChild(cardElement)
+    
+    // 动画完成后移除元素
+    setTimeout(() => {
+      document.body.removeChild(cardElement)
+    }, 3000)
+  }
+  
+  animateCard()
+  
   eventDialog.value = {
     title,
     icon,
@@ -800,7 +853,7 @@ watch(() => gameStore.gameState?.phase, (phase) => {
 .game-board-container {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
   padding: 20px;
   gap: 20px;
   font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
@@ -810,12 +863,13 @@ watch(() => gameStore.gameState?.phase, (phase) => {
   position: relative;
   width: 800px;
   height: 800px;
-  background: linear-gradient(145deg, #f0f8ff 0%, #e6f3ff 100%);
-  border: 6px solid #4a90e2;
-  border-radius: 20px;
+  background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 8px solid #495057;
+  border-radius: 25px;
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    inset 0 2px 10px rgba(255, 255, 255, 0.8);
+    0 25px 50px rgba(0, 0, 0, 0.4),
+    inset 0 4px 12px rgba(255, 255, 255, 0.9),
+    0 0 0 2px rgba(73, 80, 87, 0.1);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -824,104 +878,140 @@ watch(() => gameStore.gameState?.phase, (phase) => {
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  font-size: 10px;
-  font-weight: bold;
-  color: #333;
+  font-size: 11px;
+  font-weight: 600;
+  color: #2c3e50;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background: #fff;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  padding: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border: 3px solid #dee2e6;
+  border-radius: 12px;
+  padding: 6px 4px;
   text-align: center;
   overflow: hidden;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .property-cell:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
   z-index: 10;
+  border-color: #4a90e2;
 }
 
 .property-cell.owned {
-  border-color: #4CAF50;
-  background: #e8f5e8;
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+  border-color: #28a745;
+  background: linear-gradient(145deg, #d4edda 0%, #c3e6cb 100%);
+  box-shadow: 
+    0 6px 12px rgba(40, 167, 69, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .property-cell.owned-by-current {
-  border-color: #FFC107;
-  background: #fff9c4;
-  box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+  border-color: #ffc107;
+  background: linear-gradient(145deg, #fff3cd 0%, #fce4a8 100%);
+  box-shadow: 
+    0 6px 12px rgba(255, 193, 7, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .owner-indicator {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 20px;
-  height: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: bold;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 5;
+  border: 3px solid white;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  z-index: 15;
+  backdrop-filter: blur(4px);
 }
 
 .owner-name {
   position: absolute;
-  bottom: -12px;
+  bottom: -18px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 6px;
-  background: rgba(0, 0, 0, 0.7);
+  font-size: 8px;
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
   color: white;
-  padding: 1px 3px;
-  border-radius: 3px;
+  padding: 2px 6px;
+  border-radius: 6px;
   white-space: nowrap;
   max-width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .property-name {
-  font-size: 9px;
-  line-height: 1.1;
-  margin-bottom: 2px;
+  font-size: 10px;
+  line-height: 1.2;
+  margin: 2px 0;
+  font-weight: 700;
+  text-align: center;
+  color: #2c3e50;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  /* 确保文字方向朝下 */
+  writing-mode: horizontal-tb;
+  direction: ltr;
 }
 
 .property-price {
-  font-size: 8px;
-  color: #666;
+  font-size: 9px;
+  color: #495057;
+  font-weight: 600;
+  margin: 1px 0;
 }
 
 .property-houses {
-  font-size: 8px;
-  color: #4CAF50;
+  font-size: 9px;
+  color: #28a745;
+  font-weight: 600;
+  margin: 1px 0;
 }
 
 .player-piece {
   position: absolute;
-  width: 25px;
-  height: 25px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 2px solid #fff;
+  border: 3px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
   color: #fff;
-  z-index: 20;
-  transition: all 0.5s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 25;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.player-piece:hover {
+  transform: scale(1.2);
+  box-shadow: 
+    0 6px 16px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .center-area {
@@ -1401,5 +1491,109 @@ watch(() => gameStore.gameState?.phase, (phase) => {
 
 .event-dialog-footer .el-button {
   min-width: 100px;
+}
+
+/* 卡片抽取动画效果 */
+.floating-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  animation: cardFloat 3s ease-in-out;
+  pointer-events: none;
+}
+
+.card-content {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    inset 0 2px 8px rgba(255, 255, 255, 0.8);
+  text-align: center;
+  min-width: 200px;
+  border: 3px solid #4a90e2;
+}
+
+.card-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  animation: bounce 2s infinite;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes cardFloat {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.8) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* 特殊格子样式增强 */
+.property-cell.chance {
+  background: linear-gradient(145deg, #E74C3C 0%, #FF6B6B 100%);
+  color: white;
+}
+
+.property-cell.community {
+  background: linear-gradient(145deg, #3498DB 0%, #74B9FF 100%);
+  color: white;
+}
+
+.property-cell.tax {
+  background: linear-gradient(145deg, #8E44AD 0%, #9B59B6 100%);
+  color: white;
+}
+
+.property-cell.parking {
+  background: linear-gradient(145deg, #1ABC9C 0%, #16A085 100%);
+  color: white;
+}
+
+.property-cell.jail {
+  background: linear-gradient(145deg, #95A5A6 0%, #BDC3C7 100%);
+  color: #2c3e50;
+}
+
+.property-cell.gotojail {
+  background: linear-gradient(145deg, #E74C3C 0%, #C0392B 100%);
+  color: white;
+}
+
+.property-cell.special {
+  background: linear-gradient(145deg, #F39C12 0%, #F1C40F 100%);
+  color: #2c3e50;
+  font-weight: bold;
 }
 </style>
