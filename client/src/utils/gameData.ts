@@ -1,24 +1,25 @@
 import type { Property } from '@/types'
 
+// {{ AURA-X: Modify - 修复地块数据一致性，与服务器端保持同步 }}
 export const HUAIAN_PROPERTIES: Property[] = [
   // 起点
   { id: '0', name: '起点', position: 0, price: 0, rent: 0, group: 'special', houses: 0, hotels: 0, mortgaged: false, description: '每次经过获得200元', culture: '淮安市政府广场，城市的政治中心' },
-  
-  // 棕色组
-  { id: '1', name: '河下古镇', position: 1, price: 60, rent: 2, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '千年古镇，保留明清街巷，运河文化精华', culture: '淮安历史文化名镇，古代漕运重镇', housePrice: 50 },
+
+  // 棕色组 - 修正为与服务器端一致的数据
+  { id: '1', name: '淮安府署', position: 1, price: 600, rent: 20, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '明清时期淮安府衙门所在地', culture: '淮安历史文化的重要象征，见证了淮安作为漕运总督府的辉煌' },
   { id: '2', name: '机会', position: 2, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
-  { id: '3', name: '淮安驸马巷', position: 3, price: 60, rent: 4, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '古巷道，连接历史与民俗', culture: '明清时期的古街巷，承载着深厚的历史文化', housePrice: 50 },
+  { id: '3', name: '河下古镇', position: 3, price: 600, rent: 40, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '千年古镇，文化底蕴深厚', culture: '淮安历史文化名镇，古代漕运重镇' },
   { id: '4', name: '所得税', position: 4, price: 0, rent: 0, group: 'tax', houses: 0, hotels: 0, mortgaged: false, description: '缴纳所得税200元' },
-  { id: '5', name: '淮安东站', position: 5, price: 200, rent: 25, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '高铁枢纽站', culture: '连接南北的重要交通枢纽' },
-  
-  // 浅蓝组
-  { id: '6', name: '周恩来故居', position: 6, price: 100, rent: 6, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '伟人童年居所，红色教育基地', culture: '中华人民共和国第一任总理周恩来的童年居所', housePrice: 50 },
+  { id: '5', name: '淮安东站', position: 5, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '高铁枢纽站', culture: '连接南北的重要交通枢纽' },
+
+  // 浅蓝组 - 修正为与服务器端一致的数据
+  { id: '6', name: '清晏园', position: 6, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '淮安最著名的古典园林', culture: '江南园林艺术的代表作品' },
   { id: '7', name: '公共服务', position: 7, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
-  { id: '8', name: '吴承恩故居', position: 8, price: 120, rent: 8, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '《西游记》作者故居，文学地标', culture: '明代小说家吴承恩的故居，《西游记》诞生地', housePrice: 50 },
-  { id: '9', name: '里运河', position: 9, price: 120, rent: 8, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '京杭大运河淮安段', culture: '世界文化遗产，千年水运文化', housePrice: 50 },
-  
+  { id: '8', name: '淮安万达广场', position: 8, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '现代化商业中心', culture: '淮安重要的商业综合体' },
+  { id: '9', name: '里运河', position: 9, price: 1200, rent: 80, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '京杭大运河淮安段', culture: '世界文化遗产，千年水运文化' },
+
   // 监狱
-  { id: '10', name: '淮安府衙审判', position: 10, price: 0, rent: 0, group: 'jail', houses: 0, hotels: 0, mortgaged: false, description: '临时拘留，支付罚金或关押' },
+  { id: '10', name: '监狱', position: 10, price: 0, rent: 0, group: 'jail', houses: 0, hotels: 0, mortgaged: false, description: '临时拘留所' },
   
   // 粉红组
   { id: '11', name: '淮安府署', position: 11, price: 140, rent: 10, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '古代官衙，淮安行政中心遗迹', culture: '明清时期淮安府衙门所在地，见证淮安作为漕运总督府的辉煌', housePrice: 100 },
@@ -67,21 +68,29 @@ export const HUAIAN_PROPERTIES: Property[] = [
 ]
 
 export const CHANCE_CARDS = [
-  { id: 'chance1', type: 'chance', title: '政府扶持', description: '获得政府创业扶持资金', action: 'addMoney', amount: 1500 },
-  { id: 'chance2', type: 'chance', title: '市场机遇', description: '抓住市场机遇，投资收益翻倍', action: 'doubleRent', amount: 0 },
-  { id: 'chance3', type: 'chance', title: '前往起点', description: '回到起点，领取2000元', action: 'moveToPosition', position: 0 },
-  { id: 'chance4', type: 'chance', title: '交通罚款', description: '违章停车被罚款', action: 'loseMoney', amount: 500 },
-  { id: 'chance5', type: 'chance', title: '投资失败', description: '投资项目失败，损失资金', action: 'loseMoney', amount: 1000 },
+  { id: 'chance1', type: 'chance', title: '参观周恩来故居', description: '获得300元灵感奖金', action: 'addMoney', amount: 300 },
+  { id: 'chance2', type: 'chance', title: '吴承恩故居西游灵感爆发', description: '一轮租金翻倍', action: 'doubleRent', amount: 0 },
+  { id: 'chance3', type: 'chance', title: '前往起点', description: '回到起点，领取200元', action: 'moveToPosition', position: 0 },
+  { id: 'chance4', type: 'chance', title: '交通罚款', description: '违章停车被罚款200元', action: 'loseMoney', amount: 200 },
+  { id: 'chance5', type: 'chance', title: '投资运河航运', description: '获得运河船只，航运模式解锁', action: 'getShip', amount: 0 },
   { id: 'chance6', type: 'chance', title: '房产升值', description: '所有房产价值上涨10%', action: 'propertyAppreciation', amount: 0 },
+  { id: 'chance7', type: 'chance', title: '漕运博物馆文化节', description: '如果拥有博物馆类地产，额外获得500元', action: 'cultureBonus', amount: 500 },
+  { id: 'chance8', type: 'chance', title: '大运河申遗成功', description: '运河相关地产租金提升20%', action: 'canalBonus', amount: 0 },
+  { id: 'chance9', type: 'chance', title: '政府基建投资', description: '获得政府扶持资金800元', action: 'addMoney', amount: 800 },
+  { id: 'chance10', type: 'chance', title: '前往监狱', description: '直接前往监狱，不经过起点', action: 'goToJail', amount: 0 }
 ]
 
 export const COMMUNITY_CARDS = [
-  { id: 'community1', type: 'community', title: '慈善捐款', description: '参与慈善活动，获得社会声誉', action: 'addMoney', amount: 800 },
-  { id: 'community2', type: 'community', title: '纳税优惠', description: '享受税收优惠政策', action: 'taxRelief', amount: 0 },
-  { id: 'community3', type: 'community', title: '社区建设', description: '参与社区建设，每位玩家给你50元', action: 'collectFromAll', amount: 50 },
-  { id: 'community4', type: 'community', title: '医疗费用', description: '生病住院，支付医疗费用', action: 'loseMoney', amount: 800 },
-  { id: 'community5', type: 'community', title: '教育投资', description: '教育投资获得回报', action: 'addMoney', amount: 1200 },
-  { id: 'community6', type: 'community', title: '环保奖励', description: '环保项目获得政府奖励', action: 'addMoney', amount: 1000 },
+  { id: 'community1', type: 'community', title: '参加河下古镇庙会', description: '所有玩家支付你50元庆贺费', action: 'collectFromAll', amount: 50 },
+  { id: 'community2', type: 'community', title: '运河涨水', description: '洪泽湖区地产支付200元防洪费', action: 'floodTax', amount: 200 },
+  { id: 'community3', type: 'community', title: '淮扬菜美食节', description: '获得淮扬名菜buff，下次罚款免疫', action: 'getFoodBuff', amount: 0 },
+  { id: 'community4', type: 'community', title: '医疗费用', description: '生病住院，支付医疗费用300元', action: 'loseMoney', amount: 300 },
+  { id: 'community5', type: 'community', title: '教育投资奖励', description: '支持本地教育，获得回报600元', action: 'addMoney', amount: 600 },
+  { id: 'community6', type: 'community', title: '环保奖励', description: '参与运河环保，获得政府奖励400元', action: 'addMoney', amount: 400 },
+  { id: 'community7', type: 'community', title: '慈善捐款', description: '参与慈善活动，获得社会声誉和300元奖励', action: 'addMoney', amount: 300 },
+  { id: 'community8', type: 'community', title: '文化遗产保护', description: '参与文化遗产保护，每位玩家给你30元', action: 'collectFromAll', amount: 30 },
+  { id: 'community9', type: 'community', title: '税收优惠', description: '享受税收优惠政策，下次税费减半', action: 'taxRelief', amount: 0 },
+  { id: 'community10', type: 'community', title: '前往起点', description: '社区建设有功，前往起点领奖', action: 'moveToPosition', position: 0 }
 ]
 
 export function getPropertyByPosition(position: number): Property | undefined {
@@ -126,14 +135,14 @@ export const CANAL_TREASURE_CARDS = [
 ]
 
 export const GROUP_MONOPOLY_EFFECTS = {
-  brown: { name: '古镇文化区', effect: '租金+15%', bonus: 0.15 },
-  lightblue: { name: '伟人故里', effect: '每回合+20元文化津贴', bonus: 20 },
-  pink: { name: '古建遗址区', effect: '租金+25%', bonus: 0.25 },
-  orange: { name: '淮扬美食区', effect: '每回合随机获得50-200元美食收入', bonus: 'food_income' },
-  red: { name: '现代文化区', effect: '租金+30%', bonus: 0.30 },
-  yellow: { name: '生态旅游区', effect: '每3回合+300元生态奖励', bonus: 'eco_bonus' },
-  green: { name: '教育科研区', effect: '建造成本-25%，租金+35%', bonus: 0.35 },
-  darkblue: { name: '商业金融区', effect: '租金+50%，可进行高级金融操作', bonus: 0.50 },
+  brown: { name: '古镇风韵', effect: '租金基础加成10%', bonus: 0.1 },
+  lightblue: { name: '伟人故里', effect: '每回合额外获得20元文化津贴', bonus: 20 },
+  pink: { name: '府衙威严', effect: '免疫税收类罚款', bonus: 'tax_immunity' },
+  orange: { name: '淮扬美食', effect: '每回合随机获得50-200元美食收入', bonus: 'food_income' },
+  red: { name: '文化圣地', effect: '租金收入增加20%', bonus: 0.2 },
+  yellow: { name: '生态旅游', effect: '每3回合获得300元生态奖励', bonus: 'eco_bonus' },
+  green: { name: '教育科研', effect: '建造房屋成本减少25%', bonus: 'build_discount' },
+  darkblue: { name: '经济中心', effect: '租金翻倍，但建造成本增加50%', bonus: 'economic_center' },
   railroad: { name: '交通枢纽', effect: '根据拥有数量倍增租金', bonus: 'railroad_multiplier' },
   utility: { name: '公用事业', effect: '租金=骰子点数×倍数', bonus: 'utility_multiplier' }
 }

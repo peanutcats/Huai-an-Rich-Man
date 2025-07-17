@@ -9,7 +9,7 @@ class Game {
     this.players = players.map((player, index) => ({
       ...player,
       position: 0,
-      money: 1500, // 起始资金1500元
+      money: 15000, // {{ AURA-X: Modify - 调整起始资金以适应新的地块价格 }}
       properties: [],
       inJail: false,
       jailTurns: 0,
@@ -156,8 +156,8 @@ class Game {
 
     // 检查是否经过起点
     if (player.position < oldPosition) {
-      player.money += 200 // 经过起点获得200元
-      this.addGameEvent('passStart', { playerId, amount: 200 })
+      player.money += 2000 // {{ AURA-X: Modify - 调整经过起点奖励以适应新的经济规模 }}
+      this.addGameEvent('passStart', { playerId, amount: 2000 })
     }
 
     // 处理当前位置
@@ -168,15 +168,25 @@ class Game {
 
     // 如果没有掷出双数且没有需要用户交互的事件，切换到下一个玩家
     const needsUserInteraction = eventResult && (
-      eventResult.type === 'property' || 
-      eventResult.type === 'chance' || 
+      eventResult.type === 'property' ||
+      eventResult.type === 'chance' ||
       eventResult.type === 'community' ||
       eventResult.type === 'tax' ||
       eventResult.type === 'rent'
     )
-    
+
+    // {{ AURA-X: Add - 添加回合切换逻辑的详细日志 }}
+    console.log(`🎲 掷骰子结果分析:`)
+    console.log(`   - 是否双数: ${isDouble}`)
+    console.log(`   - 玩家是否在监狱: ${player.inJail}`)
+    console.log(`   - 是否需要用户交互: ${needsUserInteraction}`)
+    console.log(`   - 事件类型: ${eventResult?.type || '无事件'}`)
+
     if (!isDouble && !player.inJail && !needsUserInteraction) {
+      console.log(`⏭️ 自动切换到下一个玩家`)
       this.nextTurn()
+    } else {
+      console.log(`⏸️ 等待用户交互或处理特殊情况`)
     }
 
     await this.save()
@@ -196,7 +206,15 @@ class Game {
 
   async handlePlayerLanding(player) {
     const property = this.board.find(p => p.position === player.position)
-    if (!property) return null
+
+    // {{ AURA-X: Add - 添加详细调试日志来追踪地块匹配和事件触发 }}
+    console.log(`🎯 玩家 ${player.id} 到达位置 ${player.position}`)
+    console.log(`🏠 找到的地块:`, property ? `${property.name} (ID: ${property.id}, Group: ${property.group}, Price: ${property.price}, Owner: ${property.owner})` : '未找到地块')
+
+    if (!property) {
+      console.log(`❌ 位置 ${player.position} 没有找到对应的地块`)
+      return null
+    }
 
     let eventResult = null
 
@@ -258,23 +276,33 @@ class Game {
       
       default:
         // 普通地产
-        eventResult = await this.handlePropertyLanding(player, property)
+        console.log(`🏘️ 处理普通地产: ${property.name}`)
+        eventResult = await this.handlePropertyPurchaseOrRent(player, property)
         break
     }
-    
+
+    // {{ AURA-X: Add - 记录事件处理结果 }}
+    console.log(`📋 事件处理结果:`, eventResult)
+
     return eventResult
   }
 
-  async handlePropertyLanding(player, property) {
+  async handlePropertyPurchaseOrRent(player, property) {
+    // {{ AURA-X: Add - 添加详细的地产处理日志 }}
+    console.log(`🏠 处理地产着陆: 玩家 ${player.id} 到达 ${property.name}`)
+    console.log(`💰 地产信息: 价格=${property.price}, 拥有者=${property.owner}, 玩家资金=${player.money}`)
+
     if (!property.owner && property.price > 0) {
       // 无主地产，可以购买
+      console.log(`✅ 可购买地产: ${property.name}, 价格: ${property.price}`)
+
       this.addGameEvent('landOnProperty', {
         playerId: player.id,
         propertyId: property.id,
         canBuy: player.money >= property.price
       })
-      
-      return {
+
+      const purchaseEvent = {
         type: 'property',
         propertyId: property.id,
         propertyName: property.name,
@@ -282,6 +310,9 @@ class Game {
         canBuy: player.money >= property.price,
         playerId: player.id
       }
+
+      console.log(`🎯 生成购买事件:`, purchaseEvent)
+      return purchaseEvent
     } else if (property.owner && property.owner !== player.id && !property.mortgaged) {
       // 需要支付租金
       const rent = this.calculateRent(property)
@@ -624,7 +655,7 @@ class Game {
       
       case 'moveToPosition':
         if (card.position < player.position) {
-          player.money += 200 // 经过起点奖励200元
+          player.money += 2000 // {{ AURA-X: Modify - 调整经过起点奖励以适应新的经济规模 }}
         }
         player.position = card.position
         await this.handlePlayerLanding(player)

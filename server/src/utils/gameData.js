@@ -1,22 +1,23 @@
+// {{ AURA-X: Modify - 修复地块数据一致性，与数据库保持同步 }}
 const HUAIAN_PROPERTIES = [
   // 起点
   { id: '0', name: '起点', position: 0, price: 0, rent: 0, group: 'special', houses: 0, hotels: 0, mortgaged: false, description: '每次经过获得200元', culture: '淮安市政府广场，城市的政治中心' },
-  
-  // 棕色组
-  { id: '1', name: '河下古镇', position: 1, price: 60, rent: 2, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '千年古镇，保留明清街巷，运河文化精华', culture: '淮安历史文化名镇，古代漕运重镇', housePrice: 50 },
+
+  // 棕色组 - 修正为与数据库一致的数据
+  { id: '1', name: '淮安府署', position: 1, price: 600, rent: 20, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '明清时期淮安府衙门所在地', culture: '淮安历史文化的重要象征，见证了淮安作为漕运总督府的辉煌', housePrice: 500 },
   { id: '2', name: '机会', position: 2, price: 0, rent: 0, group: 'chance', houses: 0, hotels: 0, mortgaged: false, description: '抽取机会卡片' },
-  { id: '3', name: '淮安驸马巷', position: 3, price: 60, rent: 4, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '古巷道，连接历史与民俗', culture: '明清时期的古街巷，承载着深厚的历史文化', housePrice: 50 },
+  { id: '3', name: '河下古镇', position: 3, price: 600, rent: 40, group: 'brown', houses: 0, hotels: 0, mortgaged: false, description: '千年古镇，文化底蕴深厚', culture: '淮安历史文化名镇，古代漕运重镇', housePrice: 500 },
   { id: '4', name: '所得税', position: 4, price: 0, rent: 0, group: 'tax', houses: 0, hotels: 0, mortgaged: false, description: '缴纳所得税200元' },
-  { id: '5', name: '淮安东站', position: 5, price: 200, rent: 25, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '高铁枢纽站', culture: '连接南北的重要交通枢纽' },
-  
-  // 浅蓝组
-  { id: '6', name: '周恩来故居', position: 6, price: 100, rent: 6, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '伟人童年居所，红色教育基地', culture: '中华人民共和国第一任总理周恩来的童年居所', housePrice: 50 },
+  { id: '5', name: '淮安东站', position: 5, price: 2000, rent: 250, group: 'railroad', houses: 0, hotels: 0, mortgaged: false, description: '高铁枢纽站', culture: '连接南北的重要交通枢纽' },
+
+  // 浅蓝组 - 修正为与数据库一致的数据
+  { id: '6', name: '清晏园', position: 6, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '淮安最著名的古典园林', culture: '江南园林艺术的代表作品', housePrice: 500 },
   { id: '7', name: '公共服务', position: 7, price: 0, rent: 0, group: 'community', houses: 0, hotels: 0, mortgaged: false, description: '抽取公共服务卡片' },
-  { id: '8', name: '吴承恩故居', position: 8, price: 120, rent: 8, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '《西游记》作者故居，文学地标', culture: '明代小说家吴承恩的故居，《西游记》诞生地', housePrice: 50 },
-  { id: '9', name: '里运河', position: 9, price: 120, rent: 8, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '京杭大运河淮安段', culture: '世界文化遗产，千年水运文化', housePrice: 50 },
-  
+  { id: '8', name: '淮安万达广场', position: 8, price: 1000, rent: 60, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '现代化商业中心', culture: '淮安重要的商业综合体', housePrice: 500 },
+  { id: '9', name: '里运河', position: 9, price: 1200, rent: 80, group: 'lightblue', houses: 0, hotels: 0, mortgaged: false, description: '京杭大运河淮安段', culture: '世界文化遗产，千年水运文化', housePrice: 500 },
+
   // 监狱
-  { id: '10', name: '淮安府衙审判', position: 10, price: 0, rent: 0, group: 'jail', houses: 0, hotels: 0, mortgaged: false, description: '临时拘留，支付罚金或关押' },
+  { id: '10', name: '监狱', position: 10, price: 0, rent: 0, group: 'jail', houses: 0, hotels: 0, mortgaged: false, description: '临时拘留所' },
   
   // 粉红组
   { id: '11', name: '淮安府署', position: 11, price: 140, rent: 10, group: 'pink', houses: 0, hotels: 0, mortgaged: false, description: '古代官衙，淮安行政中心遗迹', culture: '明清时期淮安府衙门所在地，见证淮安作为漕运总督府的辉煌', housePrice: 100 },
